@@ -45,7 +45,7 @@ const ITEMS: ItemData[] = [
   { id: 'p-12', x0: 754, x1: 916, y0: 484, y1: 700, name: 'Pleated Maxi Skirt', price: '$1,340' },
 ];
 
-export interface FemaleLookMeta {
+interface FemaleLookMeta {
   index: number;
   numStr: string;
   name: string;
@@ -53,7 +53,7 @@ export interface FemaleLookMeta {
   items: ItemData[];
 }
 
-export const FEMALE_LOOKS: FemaleLookMeta[] = [
+const FEMALE_LOOKS: FemaleLookMeta[] = [
   {
     index: 0,
     numStr: '01',
