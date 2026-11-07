@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useAtelier } from '../context/AtelierContext';
-import { api } from '../services/api';
 import type { CapsulePiece } from '../types';
 
 const MODELS =
@@ -19,7 +18,6 @@ const LOOKS: [number, number][] = [
 ];
 const Y0 = 48;
 const Y1 = 496;
-const FIRST = 15;
 
 // Each piece's box on the 960 x 720 sheet: x0, x1, y0, y1, name, price
 interface ItemData {
@@ -47,6 +45,59 @@ const ITEMS: ItemData[] = [
   { id: 'p-12', x0: 754, x1: 916, y0: 484, y1: 700, name: 'Pleated Maxi Skirt', price: '$1,340' },
 ];
 
+export interface FemaleLookMeta {
+  index: number;
+  numStr: string;
+  name: string;
+  desc: string;
+  items: ItemData[];
+}
+
+export const FEMALE_LOOKS: FemaleLookMeta[] = [
+  {
+    index: 0,
+    numStr: '01',
+    name: 'Feather & Silk Silhouette',
+    desc: 'Blush ostrich feather jacket with fluid Como silk wide-leg trousers.',
+    items: [ITEMS[0], ITEMS[1], ITEMS[3]],
+  },
+  {
+    index: 1,
+    numStr: '02',
+    name: 'Pleated Riviera Evening',
+    desc: 'Architectural pleated gown in sage silk charmeuse with gold belt.',
+    items: [ITEMS[2], ITEMS[3], ITEMS[5]],
+  },
+  {
+    index: 2,
+    numStr: '03',
+    name: 'Champagne Satin Trench',
+    desc: 'Fluid double-breasted satin trench dress with calfskin top-handle bag.',
+    items: [ITEMS[4], ITEMS[5], ITEMS[3]],
+  },
+  {
+    index: 3,
+    numStr: '04',
+    name: 'Billow Silk Poise',
+    desc: 'Voluminous gathered silk blouse with tie-waist pleated trousers.',
+    items: [ITEMS[6], ITEMS[7], ITEMS[5]],
+  },
+  {
+    index: 4,
+    numStr: '05',
+    name: 'Powder Blue Couture',
+    desc: 'Double-faced cashmere long coat over ivory straight trousers.',
+    items: [ITEMS[8], ITEMS[9], ITEMS[5]],
+  },
+  {
+    index: 5,
+    numStr: '06',
+    name: 'Sculpted Ruffle Statement',
+    desc: 'Tiered ruffle bodice in organza silk over flowing pleated maxi skirt.',
+    items: [ITEMS[10], ITEMS[11], ITEMS[3]],
+  },
+];
+
 // Depth stops from d = -1 (leaving past the rail) to d = 5 (arriving out of the haze)
 const KX = [1.2, 0.744, 0.496, 0.346, 0.235, 0.15, 0.085];
 const KF = [1.14, 0.89, 0.777, 0.704, 0.651, 0.616, 0.59];
@@ -58,22 +109,11 @@ const N = LOOKS.length;
 const wrap = (x: number, n: number) => ((x % n) + n) % n;
 const clamp = (x: number, a: number, b: number) => Math.min(b, Math.max(a, x));
 
-interface ChatMsg {
-  id: string;
-  sender: 'client' | 'atelier';
-  text: string;
-}
-
 export const RunwayLookbook: React.FC = () => {
   const {
-    openBooking,
     curatedPieces,
     toggleCuratePiece,
     showToast,
-    activeSilhouette,
-    setActiveSilhouette,
-    activeDrapeScore,
-    setActiveDrapeScore,
     addToCart,
   } = useAtelier();
 
@@ -110,38 +150,39 @@ export const RunwayLookbook: React.FC = () => {
   const movedRef = useRef(0);
   const wheelTimerRef = useRef<number | null>(null);
 
-  // Atelier concierge interactive state
-  const [suiteMinimized, setSuiteMinimized] = useState(false);
-  const [customPrompt, setCustomPrompt] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [messages, setMessages] = useState<ChatMsg[]>([
-    {
-      id: 'm-1',
-      sender: 'client',
-      text: 'Tailor an effortless Sera.ji silhouette in pure Italian mulberry silk and washed Belgian linen.',
-    },
-    {
-      id: 'm-2',
-      sender: 'atelier',
-      text: 'Curating a handpicked Sera.ji silhouette with relaxed architectural drapes, natural raw textures, and quiet luxury. Every piece is handpicked, polished, and quietly elevated.',
-    },
-    {
-      id: 'm-3',
-      sender: 'client',
-      text: 'Push it further: more formal soirée, handpicked lapel.',
-    },
-    {
-      id: 'm-4',
-      sender: 'atelier',
-      text: 'Refining the cut into a formal Sera.ji evening drape — sculpted shoulder lines, handpicked silk lapels, and hand-embroidered artisanal detailing. Crafted for lasting poise and Mediterranean grace.',
-    },
-  ]);
+  // State for active look and bundle pricing
+  const [pState, setPState] = useState(0);
+  const [isAddingBundle, setIsAddingBundle] = useState(false);
 
-  const promptPresets = [
-    'Handpicked Riviera Lapel',
-    'Bias-Cut Evening Charmeuse',
-    'Sera.ji Washed Linen Trench',
-  ];
+  const activeIdx = wrap(Math.round(pState), N);
+  const currentLook = FEMALE_LOOKS[activeIdx];
+
+  const parsePrice = (priceStr: string) =>
+    parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 0;
+  const bundleOriginalPrice = currentLook.items.reduce(
+    (sum, item) => sum + parsePrice(item.price),
+    0
+  );
+  const bundleDiscountedPrice = bundleOriginalPrice * 0.9;
+
+  const jumpToLook = (idx: number) => {
+    let d = (idx - activeIdx) % N;
+    if (d > 3) d -= 6;
+    else if (d < -3) d += 6;
+    targetRef.current = Math.round(targetRef.current) + d;
+  };
+
+  const handleAddFullLook = () => {
+    setIsAddingBundle(true);
+    setTimeout(() => {
+      addToCart(3);
+      setIsAddingBundle(false);
+      showToast(
+        `Added full ${currentLook.name} (3 pieces) to bag with 10% bundle savings ✓`,
+        'gold'
+      );
+    }, 400);
+  };
 
   // Sizing calculation
   const updateSize = useCallback(() => {
@@ -226,7 +267,7 @@ export const RunwayLookbook: React.FC = () => {
     // Paint Rolling Look Number
     const roll = rollRef.current;
     if (roll && roll.firstChild) {
-      const rollHeight = (roll.firstChild as HTMLElement).offsetHeight || 38;
+      const rollHeight = (roll.firstChild as HTMLElement).offsetHeight || 32;
       roll.style.transform = `translate3d(0,${(-wrap(p, N) * rollHeight).toFixed(1)}px,0)`;
     }
   }, []);
@@ -253,9 +294,10 @@ export const RunwayLookbook: React.FC = () => {
         pRef.current = target;
       }
 
-      if (pRef.current !== was || dirtyRef.current) {
+      if (Math.abs(pRef.current - was) > 0.0001 || dirtyRef.current) {
         dirtyRef.current = false;
         paint();
+        setPState(pRef.current);
       }
 
       // Cursor ring follow
@@ -304,7 +346,12 @@ export const RunwayLookbook: React.FC = () => {
 
   const handlePointerDown = (e: React.PointerEvent) => {
     const target = e.target as HTMLElement;
-    if (target.closest('a') || target.closest('button') || target.closest('.runway-atelier-glass')) {
+    if (
+      target.closest('a') ||
+      target.closest('button') ||
+      target.closest('.ttl-runway-bundle-card') ||
+      target.closest('.ttl-controls-bar')
+    ) {
       return;
     }
     downRef.current = true;
@@ -338,9 +385,6 @@ export const RunwayLookbook: React.FC = () => {
 
   // Wheel handling with debounced snapping
   const handleWheel = (e: React.WheelEvent) => {
-    const target = e.target as HTMLElement;
-    if (target.closest('.runway-chat-scroll')) return;
-
     e.preventDefault();
     targetRef.current += clamp(e.deltaY + e.deltaX, -120, 120) / 420;
     if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
@@ -386,65 +430,6 @@ export const RunwayLookbook: React.FC = () => {
     showToast(`Added ${item.name} (${item.price}) to cart ✓`, 'gold');
   };
 
-  // Interactive AI prompt submission
-  const handlePromptSubmit = async (text: string) => {
-    if (!text.trim() || isProcessing) return;
-
-    const userMsg: ChatMsg = {
-      id: `p-${Date.now()}`,
-      sender: 'client',
-      text: text.trim(),
-    };
-    setMessages((prev) => [...prev, userMsg]);
-    setCustomPrompt('');
-    setIsProcessing(true);
-
-    try {
-      const response = await api.queryAtelierAi(text);
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `ai-${Date.now()}`,
-          sender: 'atelier',
-          text: response.reply,
-        },
-      ]);
-      setActiveSilhouette(response.silhouette);
-      setActiveDrapeScore(response.drapeScore);
-      showToast(`Cut refined: ${response.silhouette} (${response.drapeScore}%)`, 'gold');
-    } catch {
-      let reply = `Refining ${text} with pure Como mulberry silk weave. Handpicked precision & poise elevated.`;
-      let silhouette = 'Sera.ji Riviera Silhouette';
-      let drape = 96;
-      if (text.toLowerCase().includes('lapel')) {
-        silhouette = 'Sera.ji Riviera Peak Lapel';
-        reply = 'Refining architectural lapels with 450GSM hand-embroidered silk lining and relaxed Italian cut.';
-        drape = 97;
-      } else if (text.toLowerCase().includes('charmeuse')) {
-        silhouette = 'Sera.ji Bias-Cut Charmeuse Drape';
-        reply = 'Fluid evening silhouette sculpted along natural bias grain. Pure grade-6A Como mulberry silk.';
-        drape = 98;
-      } else if (text.toLowerCase().includes('linen')) {
-        silhouette = 'Sera.ji Washed Linen Trench Cut';
-        reply = 'Raw-textured washed Belgian linen with unstructured shoulders and double-faced storm flap.';
-        drape = 95;
-      }
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: `ai-${Date.now()}`,
-          sender: 'atelier',
-          text: reply,
-        },
-      ]);
-      setActiveSilhouette(silhouette);
-      setActiveDrapeScore(drape);
-      showToast(`Cut refined: ${silhouette}`, 'gold');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
   return (
     <div className="runway-hero-container">
       <main className="runway-main">
@@ -488,148 +473,63 @@ export const RunwayLookbook: React.FC = () => {
             ))}
           </div>
 
-          {/* SERA.JI HANDPICKED ATELIER CONCIERGE GLASS CARD */}
-          <div className={`runway-atelier-glass ${suiteMinimized ? 'minimized' : ''}`}>
-            {/* Header */}
-            <div className="glass-header">
-              <div className="atelier-brand-pill wide">
-                <span className="pulse-dot" />
-                <span>Sera.ji Handpicked Atelier</span>
+          {/* Complete the Look Card (Positioned in Bottom-Left of Main Runway Area) */}
+          <div className="ttl-runway-bundle-card">
+            <div className="ttl-bundle-row">
+              <div>
+                <div className="ttl-bundle-title">Complete the look</div>
+                <div className="ttl-bundle-note">Bundle all 3 and save 10%</div>
               </div>
-              <button
-                className="toggle-mini-btn wide"
-                type="button"
-                onClick={() => setSuiteMinimized(!suiteMinimized)}
-                title={suiteMinimized ? 'Expand Atelier Concierge' : 'Minimize to focus on runway'}
-              >
-                {suiteMinimized ? 'Expand Concierge' : 'Minimize'}
-              </button>
+              <div className="ttl-bundle-pricing">
+                <s>${bundleOriginalPrice.toFixed(2)}</s>
+                <strong>${bundleDiscountedPrice.toFixed(2)}</strong>
+              </div>
             </div>
 
-            {!suiteMinimized && (
-              <>
-                {/* Dialogue stream */}
-                <div className="runway-chat-scroll">
-                  {messages.map((m) =>
-                    m.sender === 'client' ? (
-                      <div key={m.id} className="chat-bubble-client">
-                        {m.text}
-                      </div>
-                    ) : (
-                      <div key={m.id} className="chat-bubble-ai">
-                        <div className="ai-icon-mini">
-                          <svg viewBox="0 0 40 40" width="14" height="14" fill="#2a1a12">
-                            <path d="M5 5h13v13H5zM22 22h13v13H22z" />
-                            <path d="M22 5a13 13 0 0 1 13 13H22zM18 35A13 13 0 0 1 5 22h13z" />
-                          </svg>
-                        </div>
-                        <p>{m.text}</p>
-                      </div>
-                    )
-                  )}
-                  {isProcessing && (
-                    <div className="chat-bubble-ai typing">
-                      <span className="dot-flashing" />
-                    </div>
-                  )}
-                </div>
-
-                {/* Specification card with Order Now */}
-                <div className="runway-spec-card">
-                  <div className="spec-eyebrow wide">SERA.JI CLOTHING SPECIFICATION</div>
-                  <div className="spec-row">
-                    <span className="spec-silhouette-name">{activeSilhouette}</span>
-                    <button
-                      className="btn-order-now wide"
-                      type="button"
-                      onClick={() => openBooking('runway-fitting')}
-                      title="Reserve your private fitting and order this cut"
-                    >
-                      Order Now
-                    </button>
-                  </div>
-                  <div className="spec-metric-wrap">
-                    <span className="spec-metric-label">
-                      Handpicked precision &amp; poise ({activeDrapeScore}%)
-                    </span>
-                    <div className="spec-metric-track">
-                      <div className="spec-metric-bar" style={{ width: `${activeDrapeScore}%` }} />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Preset Chips */}
-                <div className="runway-presets-row">
-                  {promptPresets.map((preset) => (
-                    <button
-                      key={preset}
-                      type="button"
-                      className="chip-action-btn"
-                      onClick={() => handlePromptSubmit(preset)}
-                      disabled={isProcessing}
-                    >
-                      + {preset}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Direct Request Input */}
-                <form
-                  className="runway-prompt-form"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handlePromptSubmit(customPrompt);
-                  }}
-                >
-                  <input
-                    type="text"
-                    placeholder="Direct request to Sera.ji Master Draper (every piece is handpicked)..."
-                    value={customPrompt}
-                    onChange={(e) => setCustomPrompt(e.target.value)}
-                    disabled={isProcessing}
-                  />
-                  <button type="submit" disabled={isProcessing || !customPrompt.trim()} aria-label="Send prompt">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
-                      <path d="M5 12h14M12 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </form>
-              </>
-            )}
-
-            {suiteMinimized && (
-              <div className="minimized-info">
-                <span className="min-sil">{activeSilhouette}</span>
-                <button
-                  className="btn-order-now-mini wide"
-                  type="button"
-                  onClick={() => openBooking('runway-fitting')}
-                >
-                  Order Now
-                </button>
-              </div>
-            )}
+            <button
+              className="ttl-cta-bundle-btn"
+              type="button"
+              disabled={isAddingBundle}
+              onClick={handleAddFullLook}
+            >
+              <span>{isAddingBundle ? 'Adding to bag…' : 'ADD FULL LOOK TO BAG →'}</span>
+            </button>
           </div>
 
-          {/* LOOK ROLLING NUMBER AT BOTTOM LEFT */}
-          <div className="tag runway-look-tag">
-            <div className="look wide" aria-live="polite">
+          {/* Bottom Controls Bar (Rolling Look Number & Segmented Ticks) */}
+          <div className="ttl-controls-bar">
+            <div className="ttl-rolling-look">
               <span>Look</span>
-              <span className="win">
-                <span className="roll" ref={rollRef}>
-                  {Array.from({ length: N + 1 }).map((_, idx) => (
-                    <b key={idx}>{FIRST + (idx % N)}</b>
+              <span className="ttl-look-win">
+                <span className="ttl-look-roll" ref={rollRef}>
+                  {FEMALE_LOOKS.map((look) => (
+                    <b key={look.index}>{look.numStr}</b>
                   ))}
+                  <b>01</b>
                 </span>
               </span>
             </div>
-            <button
-              className="shop wide runway-order-link"
-              type="button"
-              onClick={() => openBooking('runway-fitting')}
-            >
-              Shop the look
-            </button>
+
+            {/* Segmented Ticks */}
+            <div className="ttl-ticks-group">
+              {FEMALE_LOOKS.map((look, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  className={`ttl-tick-btn ${i === activeIdx ? 'active' : ''} ${i < activeIdx ? 'past' : ''}`}
+                  onClick={() => jumpToLook(i)}
+                  aria-label={`Look ${look.numStr}: ${look.name}`}
+                >
+                  <div className="ttl-tick-track">
+                    <div className="ttl-tick-fill" />
+                  </div>
+                  <span className="ttl-tick-label">
+                    {look.numStr}
+                    <span className="ttl-tick-name">&nbsp;&nbsp;{look.name}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Follower Ring Cursor */}
