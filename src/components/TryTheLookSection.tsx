@@ -26,7 +26,7 @@ const PRODUCTS: Record<string, ProductInfo> = {
   'tatum-5-orbit-copy': {
     id: 'tatum-5-orbit-copy',
     name: 'Air Jordan 12 Retro',
-    vendor: 'Nikey | Password: 1',
+    vendor: 'Sera.ji Streetwear',
     price: 149.0,
     priceStr: '$149.00',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-tatum-5-orbit-copy.webp',
@@ -41,12 +41,12 @@ const PRODUCTS: Record<string, ProductInfo> = {
       { id: 57015167189297, a: true, o: ['45'] },
       { id: 57015167222065, a: true, o: ['46'] },
     ],
-    url: 'https://nike-makknzjs.myshopify.com/products/tatum-5-orbit-copy',
+    url: '#',
   },
   tshirt: {
     id: 'tshirt',
     name: 'Tshirt',
-    vendor: 'Nike',
+    vendor: 'Sera.ji Streetwear',
     price: 199.0,
     priceStr: '$199.00',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-tshirt.webp',
@@ -58,12 +58,12 @@ const PRODUCTS: Record<string, ProductInfo> = {
       { id: 56835911647537, a: true, o: ['M'] },
       { id: 56835911680305, a: true, o: ['XL'] },
     ],
-    url: 'https://nike-makknzjs.myshopify.com/products/tshirt',
+    url: '#',
   },
   sweatshirt: {
     id: 'sweatshirt',
     name: 'Sweatshirt',
-    vendor: 'Nike',
+    vendor: 'Sera.ji Streetwear',
     price: 199.0,
     priceStr: '$199.00',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-sweatshirt.webp',
@@ -75,12 +75,12 @@ const PRODUCTS: Record<string, ProductInfo> = {
       { id: 56835806462257, a: true, o: ['M'] },
       { id: 56835806495025, a: true, o: ['XL'] },
     ],
-    url: 'https://nike-makknzjs.myshopify.com/products/sweatshirt',
+    url: '#',
   },
   'tatum-5-orbit': {
     id: 'tatum-5-orbit',
     name: 'Tatum 5 Orbit',
-    vendor: 'Nikey | Password: 1',
+    vendor: 'Sera.ji Streetwear',
     price: 149.0,
     priceStr: '$149.00',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-tatum-5-orbit.webp',
@@ -95,12 +95,12 @@ const PRODUCTS: Record<string, ProductInfo> = {
       { id: 57015166894385, a: true, o: ['45'] },
       { id: 57015166927153, a: true, o: ['46'] },
     ],
-    url: 'https://nike-makknzjs.myshopify.com/products/tatum-5-orbit',
+    url: '#',
   },
   'hoodie-black': {
     id: 'hoodie-black',
     name: 'Hoodie Black',
-    vendor: 'Nike',
+    vendor: 'Sera.ji Streetwear',
     price: 199.0,
     priceStr: '$199.00',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-hoodie-black.webp',
@@ -112,12 +112,12 @@ const PRODUCTS: Record<string, ProductInfo> = {
       { id: 56836251746609, a: true, o: ['M'] },
       { id: 56836251779377, a: true, o: ['XL'] },
     ],
-    url: 'https://nike-makknzjs.myshopify.com/products/hoodie-black',
+    url: '#',
   },
   'sweatshirt-plus': {
     id: 'sweatshirt-plus',
     name: 'Sweatshirt Plus',
-    vendor: 'Nike',
+    vendor: 'Sera.ji Streetwear',
     price: 199.0,
     priceStr: '$199.00',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-sweatshirt-plus.webp',
@@ -129,12 +129,12 @@ const PRODUCTS: Record<string, ProductInfo> = {
       { id: 56836143808817, a: true, o: ['M'] },
       { id: 56836143841585, a: true, o: ['XL'] },
     ],
-    url: 'https://nike-makknzjs.myshopify.com/products/sweatshirt-plus',
+    url: '#',
   },
   hoodie: {
     id: 'hoodie',
     name: 'Hoodie',
-    vendor: 'Nike',
+    vendor: 'Sera.ji Streetwear',
     price: 199.0,
     priceStr: '$199.00',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-hoodie.webp',
@@ -146,12 +146,12 @@ const PRODUCTS: Record<string, ProductInfo> = {
       { id: 56836002251057, a: true, o: ['M'] },
       { id: 56836002283825, a: true, o: ['XL'] },
     ],
-    url: 'https://nike-makknzjs.myshopify.com/products/hoodie',
+    url: '#',
   },
   'air-jordan-12-retro-copy': {
     id: 'air-jordan-12-retro-copy',
     name: 'Luka 5',
-    vendor: 'Nikey | Password: 1',
+    vendor: 'Sera.ji Streetwear',
     price: 149.0,
     priceStr: '$149.00',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-air-jordan-12-retro-copy.webp',
@@ -166,7 +166,7 @@ const PRODUCTS: Record<string, ProductInfo> = {
       { id: 57015167189297, a: true, o: ['45'] },
       { id: 57015167222065, a: true, o: ['46'] },
     ],
-    url: 'https://nike-makknzjs.myshopify.com/products/air-jordan-12-retro-copy',
+    url: '#',
   },
 };
 
@@ -951,35 +951,34 @@ export const TryTheLookSection: React.FC = () => {
                           </svg>
                         </button>
 
-                        {/* Large Prominent Product Image Shot */}
-                        <div className="shot">
-                          <a
-                            href={product.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            tabIndex={-1}
-                            className="ttl-shot-link"
-                          >
-                            <img src={product.image} alt={product.name} />
-                          </a>
+                        {/* Clean Product Shot — exact same presentation as female RunwayLookbook */}
+                        <span
+                          className="shot"
+                          onClick={() => {
+                            setHotPin(itemIdx + 1);
+                            if (!isAdded) {
+                              setPickingKey(isPicking ? null : rowKey);
+                            }
+                          }}
+                          title={`Click to select ${product.name}`}
+                        >
+                          <img src={product.image} alt={product.name} />
                           <span className="ttl-card-badge" title={`Pin ${itemIdx + 1} on model`}>
                             {itemIdx + 1}
                           </span>
-                        </div>
+                        </span>
 
-                        {/* Meta: Title, Price, and Plus + Button */}
+                        {/* Meta: Title, Price, and Plus + Button — exactly matching RunwayLookbook */}
                         <div className="meta">
-                          <div>
-                            <span className="ttl-vendor-tag">{product.vendor}</span>
-                            <h3 className="wide">{product.name}</h3>
-                            <span>{product.priceStr}</span>
-                          </div>
+                          <h3 className="wide">{product.name}</h3>
+                          <span>{product.priceStr}</span>
 
                           <button
                             className={`add ${isPicking ? 'picking' : ''} ${isAdded ? 'added' : ''}`}
                             type="button"
                             aria-label={`Select size for ${product.name}`}
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation();
                               if (!isAdded) {
                                 setPickingKey(isPicking ? null : rowKey);
                               }
@@ -993,9 +992,17 @@ export const TryTheLookSection: React.FC = () => {
                           <div className="ttl-picker-box">
                             <div className="ttl-picker-header">
                               <span className="ttl-picker-legend">{product.legend}</span>
-                              <span className="ttl-picker-selected">
-                                Selected: <b>{chosenSize}</b>
-                              </span>
+                              <button
+                                type="button"
+                                className="ttl-picker-close-btn"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setPickingKey(null);
+                                }}
+                                aria-label="Close size picker"
+                              >
+                                ×
+                              </button>
                             </div>
 
                             <div className="ttl-pills-row">
@@ -1004,7 +1011,10 @@ export const TryTheLookSection: React.FC = () => {
                                   key={s}
                                   type="button"
                                   className={`ttl-pill-label ${chosenSize === s ? 'checked' : ''}`}
-                                  onClick={() => setSelectedSizes((prev) => ({ ...prev, [rowKey]: s }))}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedSizes((prev) => ({ ...prev, [rowKey]: s }));
+                                  }}
                                 >
                                   {s}
                                 </button>
@@ -1014,7 +1024,10 @@ export const TryTheLookSection: React.FC = () => {
                             <button
                               className="ttl-confirm-btn"
                               type="button"
-                              onClick={() => handleAddPiece(activeIdx, itemIdx, productKey)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddPiece(activeIdx, itemIdx, productKey);
+                              }}
                             >
                               <span>Add to bag</span>
                               <span>·</span>
@@ -1114,9 +1127,6 @@ export const TryTheLookSection: React.FC = () => {
                     <p>
                       Size {item.size} · Quantity {item.quantity} · ${(item.price * item.quantity).toFixed(2)}
                     </p>
-                    <a href={item.url} target="_blank" rel="noopener noreferrer">
-                      View original piece ↗
-                    </a>
                   </div>
                   <button
                     className="bag-remove-btn"
