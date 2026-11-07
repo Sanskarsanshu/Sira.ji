@@ -1,9 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Calendar, MoveHorizontal, ShoppingBag } from 'lucide-react';
 import ClothingRailHero, { type RailGarment } from '@/components/ui/product-rail-gallery';
+import PullLamp from '@/components/ui/pull-lamp';
 import { IMAGES } from '../constants/assets';
 import { useAtelier } from '../context/AtelierContext';
 import type { CapsulePiece } from '../types';
+import { WardrobeLibrary } from './WardrobeLibrary';
 
 type StudioGarmentSeed = Omit<RailGarment, 'tag'> & {
   basePrice: number;
@@ -155,6 +157,8 @@ export const EditorialSection: React.FC = () => {
     showToast,
   } = useAtelier();
 
+  const [sectionTheme, setSectionTheme] = useState<'light' | 'dark'>('light');
+
   const railItems = useMemo<RailGarment[]>(
     () =>
       STUDIO_RAIL_SEEDS.map((seed) => ({
@@ -187,7 +191,15 @@ export const EditorialSection: React.FC = () => {
   return (
     <section className="s-editorial" id="acclaim">
       <div className="wrap">
-        <div className="editorial-shell">
+        <div className="editorial-shell" data-theme={sectionTheme}>
+          {/* Studio Pull Lamp (Toggles Section 5 Day / Night Atelier Theme) */}
+          <div className="pointer-events-auto z-20 mx-auto mb-6 w-[170px] sm:w-[195px] lg:absolute lg:left-7 lg:top-7 lg:mb-0 lg:w-[220px] xl:left-11 xl:top-8 xl:w-[240px]">
+            <PullLamp
+              on={sectionTheme === 'light'}
+              onThemeChange={setSectionTheme}
+            />
+          </div>
+
           <div className="sec-head">
             <span className="eyebrow rv">Sera.ji Global Acclaim</span>
             <h2 className="h2 split" data-split>
@@ -200,36 +212,8 @@ export const EditorialSection: React.FC = () => {
             </p>
           </div>
 
-          {/* Private Studio Showroom Bar */}
-          <div className="sera-shelf-scope mx-auto mt-9 w-full max-w-[1160px] px-2 sm:mt-11 sm:px-6">
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-full border border-white/90 bg-white/75 px-4 py-2 shadow-[0_14px_34px_-22px_rgba(42,26,18,0.22)] backdrop-blur-xl sm:px-5">
-              <div className="flex items-center gap-2.5">
-                <span className="size-2 rounded-full bg-[#2a1a12]" />
-                <span className="text-[11px] font-medium tracking-[0.14em] text-[#5b4a3f] uppercase">
-                  Paris · Milan · Lake Como · Tokyo — 10 Archival Pieces on the Rail
-                </span>
-              </div>
-
-              <div className="ml-auto flex items-center gap-3.5">
-                <span className="hidden items-center gap-1.5 text-[11.5px] font-medium text-[#7a6a5e] lg:inline-flex">
-                  <MoveHorizontal className="size-3.5 text-[#2a1a12]" />
-                  Brush or drag hangers · Click any piece to inspect front &amp; back
-                </span>
-                <button
-                  type="button"
-                  onClick={openCurationDrawer}
-                  aria-label={`Open Trunk Show Bag (${cartCount} items)`}
-                  className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-[#2a1a12]/12 bg-white px-3.5 py-1.5 text-[12px] font-medium text-[#2a1a12] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2a1a12] hover:text-[#fbf7f1]"
-                >
-                  <ShoppingBag className="size-3.5" strokeWidth={1.7} />
-                  <span>Bag ({cartCount})</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
           {/* Interactive 3D Physics Studio Clothing Rail */}
-          <div id="studio-rail" className="mx-auto mt-3 max-w-[1220px]">
+          <div id="studio-rail" className="mx-auto mt-9 max-w-[1220px] sm:mt-11">
             <ClothingRailHero
               items={railItems}
               hanger="none"
@@ -237,6 +221,35 @@ export const EditorialSection: React.FC = () => {
               interval={2800}
               caption="Brush along the rail, slide any hanger, or click a garment to lift it off the rail and inspect front & back."
               className="bg-transparent"
+              detailExtra={<WardrobeLibrary />}
+              railHeader={
+                <div className="sera-shelf-scope mx-auto mb-3 w-full max-w-[1160px] px-2 sm:px-6">
+                  <div className="flex flex-wrap items-center justify-between gap-3 rounded-full border border-white/90 bg-white/75 px-4 py-2 shadow-[0_14px_34px_-22px_rgba(42,26,18,0.22)] backdrop-blur-xl sm:px-5">
+                    <div className="flex items-center gap-2.5">
+                      <span className="size-2 rounded-full bg-[#2a1a12]" />
+                      <span className="text-[11px] font-medium tracking-[0.14em] text-[#5b4a3f] uppercase">
+                        Paris · Milan · Lake Como · Tokyo — 10 Archival Pieces on the Rail
+                      </span>
+                    </div>
+
+                    <div className="ml-auto flex items-center gap-3.5">
+                      <span className="hidden items-center gap-1.5 text-[11.5px] font-medium text-[#7a6a5e] lg:inline-flex">
+                        <MoveHorizontal className="size-3.5 text-[#2a1a12]" />
+                        Brush or drag hangers · Click any piece to inspect front &amp; back
+                      </span>
+                      <button
+                        type="button"
+                        onClick={openCurationDrawer}
+                        aria-label={`Open Trunk Show Bag (${cartCount} items)`}
+                        className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-[#2a1a12]/12 bg-white px-3.5 py-1.5 text-[12px] font-medium text-[#2a1a12] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2a1a12] hover:text-[#fbf7f1]"
+                      >
+                        <ShoppingBag className="size-3.5" strokeWidth={1.7} />
+                        <span>Bag ({cartCount})</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              }
               isSaved={(item) => isPieceCurated(`rail-${item.id}`)}
               onToggleSave={(item) => {
                 const alreadySaved = isPieceCurated(`rail-${item.id}`);

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ArrowLeft, ChevronLeft, ChevronRight, Heart, Rotate3d, ShoppingBag } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight, Heart, Rotate3d, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type GarmentKind = "tee" | "knit" | "hoodie" | "shirt" | "jacket" | "coat";
@@ -45,6 +45,10 @@ export interface ClothingRailHeroProps extends React.ComponentProps<"section"> {
   caption?: string;
   /** Call to action rendered under the caption. */
   action?: React.ReactNode;
+  /** Optional header bar rendered above the rail that hides while a garment is inspected. */
+  railHeader?: React.ReactNode;
+  /** Optional supplementary content rendered below the inspected garment inside the section's internal scroll viewport. */
+  detailExtra?: React.ReactNode;
   /** Turns the pieces to the front one by one until the visitor interacts. */
   autoplay?: boolean;
   /** Milliseconds each piece faces the front during autoplay. */
@@ -542,6 +546,8 @@ export function ClothingRailHero({
   heading,
   caption,
   action,
+  railHeader,
+  detailExtra,
   autoplay = false,
   interval = 2600,
   hanger = "wood",
@@ -556,6 +562,7 @@ export function ClothingRailHero({
   const uid = React.useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const count = items.length;
   const stageRef = React.useRef(null as HTMLDivElement | null);
+  const scrollViewportRef = React.useRef(null as HTMLDivElement | null);
   const slots = React.useRef([] as (HTMLButtonElement | null)[]);
   const swings = React.useRef([] as (HTMLSpanElement | null)[]);
   const turns = React.useRef([] as (HTMLSpanElement | null)[]);
@@ -966,6 +973,7 @@ export function ClothingRailHero({
             openIndex !== null && "pointer-events-none select-none opacity-0",
           )}
         >
+          {railHeader}
           <div
             ref={stageRef}
             data-stage
@@ -1085,6 +1093,7 @@ export function ClothingRailHero({
               saved={isSaved ? isSaved(items[openIndex]) : false}
               onAddToBag={onAddToBag ? () => onAddToBag(items[openIndex]!) : undefined}
               onToggleSave={onToggleSave ? () => onToggleSave(items[openIndex]!) : undefined}
+              detailExtra={detailExtra}
               onNavigate={
                 count > 1
                   ? (nextIndex) => {
@@ -1107,7 +1116,7 @@ export function ClothingRailHero({
   );
 }
 
-function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAddToBag, onToggleSave, onNavigate, source, onLift, onClose }: {
+function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAddToBag, onToggleSave, detailExtra, onNavigate, source, onLift, onClose }: {
   uid: string;
   item: RailGarment;
   index: number;
@@ -1118,6 +1127,7 @@ function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAdd
   saved?: boolean;
   onAddToBag?: () => void;
   onToggleSave?: () => void;
+  detailExtra?: React.ReactNode;
   onNavigate?: (nextIndex: number) => void;
   source: () => DOMRect | null;
   onLift: (lifted: boolean) => void;
@@ -1127,6 +1137,7 @@ function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAdd
   const figureRef = React.useRef(null as HTMLDivElement | null);
   const spinRef = React.useRef(null as HTMLDivElement | null);
   const closeRef = React.useRef(null as HTMLButtonElement | null);
+  const extraRef = React.useRef(null as HTMLDivElement | null);
   const latest = React.useRef({ source, onLift, onClose });
   latest.current = { source, onLift, onClose };
   const prevIdRef = React.useRef(item.id);
@@ -1218,6 +1229,12 @@ function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAdd
     if (closing.current) return;
     closing.current = true;
     setShown(false);
+    if (panelRef.current) {
+      const panelTop = panelRef.current.getBoundingClientRect().top + window.scrollY;
+      if (window.scrollY > panelTop + 240) {
+        window.scrollTo({ top: Math.max(0, panelTop - 80), behavior: "smooth" });
+      }
+    }
     const figure = figureRef.current;
     const panel = panelRef.current;
     const to = latest.current.source();
@@ -1242,6 +1259,8 @@ function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAdd
   React.useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        const target = event.target as HTMLElement | null;
+        if (target?.tagName === "INPUT" || target?.tagName === "SELECT" || target?.tagName === "TEXTAREA") return;
         event.preventDefault();
         dismiss();
       }
@@ -1251,6 +1270,8 @@ function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAdd
   }, [dismiss]);
 
   const onKeyDown = (event: React.KeyboardEvent) => {
+    const target = event.target as HTMLElement | null;
+    if (target?.tagName === "INPUT" || target?.tagName === "SELECT" || target?.tagName === "TEXTAREA") return;
     if (event.key === "Escape") {
       event.preventDefault();
       dismiss();
@@ -1263,7 +1284,7 @@ function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAdd
   };
 
   const stage = (
-    <div ref={figureRef} className="relative z-10 mx-auto aspect-[200/310] h-[360px] max-h-full origin-top sm:h-[420px] lg:h-[450px]">
+    <div ref={figureRef} className="relative z-10 mx-auto aspect-[200/310] h-[340px] max-h-full origin-top sm:h-[395px] lg:h-[420px]">
       <div
         aria-hidden="true"
         className={cn(
@@ -1305,164 +1326,192 @@ function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAdd
       data-slot="clothing-rail-detail"
       role="region"
       aria-labelledby={titleId}
-      className="relative w-full px-4 pb-4 pt-16 font-sans text-foreground sm:px-6 md:pt-20"
+      className="relative w-full font-sans text-foreground"
       onKeyDown={onKeyDown}
     >
-      {/* Click empty showroom space to glide garment back onto rail */}
-      <div aria-hidden="true" className="absolute inset-0" onClick={dismiss} />
-
-      {/* Top-Left Floating Back Pill (frameless, matching original Detail pill aesthetic) */}
-      <button
-        ref={closeRef}
-        type="button"
-        onClick={dismiss}
-        className={cn(
-          "group absolute left-3 top-3 z-20 inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/85 px-4 py-2 text-xs font-medium tracking-wide text-foreground shadow-sm backdrop-blur-md outline-none transition-[opacity,transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-card focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none sm:left-6",
-          shown ? "opacity-100" : "opacity-0",
-        )}
-      >
-        <ArrowLeft className="size-3.5 transition-transform duration-200 group-hover:-translate-x-0.5" strokeWidth={1.7} />
-        <span>{labels.backToRail ?? "Back to Rail"}</span>
-      </button>
-
-      {/* Top-Right Floating Piece Stepper */}
-      {onNavigate && (
-        <div
+      {/* Sticky Top Control Bar */}
+      <div className="pointer-events-none sticky top-20 z-30 flex items-center justify-between px-3 sm:px-6">
+        <button
+          ref={closeRef}
+          type="button"
+          onClick={dismiss}
           className={cn(
-            "absolute right-3 top-3 z-20 inline-flex items-center gap-1 rounded-full border border-border bg-card/85 p-1 text-xs text-foreground shadow-sm backdrop-blur-md transition-opacity duration-300 motion-reduce:transition-none sm:right-6",
+            "pointer-events-auto group inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/90 px-4 py-2 text-xs font-medium tracking-wide text-foreground shadow-sm backdrop-blur-md outline-none transition-[opacity,transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-card focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none",
             shown ? "opacity-100" : "opacity-0",
           )}
         >
-          <button
-            type="button"
-            onClick={() => onNavigate(index - 1)}
-            aria-label="Previous garment on rail"
-            className="grid size-6 cursor-pointer place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/10 focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <ChevronLeft className="size-3.5" strokeWidth={1.75} />
-          </button>
-          <span className="px-2 font-mono text-[11px] tracking-[0.16em] text-muted-foreground">
-            {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-          </span>
-          <button
-            type="button"
-            onClick={() => onNavigate(index + 1)}
-            aria-label="Next garment on rail"
-            className="grid size-6 cursor-pointer place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/10 focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <ChevronRight className="size-3.5" strokeWidth={1.75} />
-          </button>
-        </div>
-      )}
+          <ArrowLeft className="size-3.5 transition-transform duration-200 group-hover:-translate-x-0.5" strokeWidth={1.7} />
+          <span>{labels.backToRail ?? "Back to Rail"}</span>
+        </button>
 
-      {/* Frameless Open-Air Two-Column Showcase (identical to original Detail, directly inside Section 5) */}
-      <div className=" pointer-events-none relative z-10 mx-auto grid w-full max-w-5xl items-center gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
-        <div className="pointer-events-auto flex flex-col items-center gap-3">
-          {stage}
-          <span
+        {onNavigate && (
+          <div
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-full border border-border bg-card/75 px-3.5 py-1 text-[11.5px] text-muted-foreground backdrop-blur-sm transition-opacity duration-500 motion-reduce:transition-none",
+              "pointer-events-auto inline-flex items-center gap-1 rounded-full border border-border bg-card/90 p-1 text-xs text-foreground shadow-sm backdrop-blur-md transition-opacity duration-300 motion-reduce:transition-none",
               shown ? "opacity-100" : "opacity-0",
             )}
           >
-            <Rotate3d className="size-3.5 text-foreground" />
-            Drag garment to turn 180°
-          </span>
-        </div>
+            <button
+              type="button"
+              onClick={() => onNavigate(index - 1)}
+              aria-label="Previous garment on rail"
+              className="grid size-6 cursor-pointer place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/10 focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <ChevronLeft className="size-3.5" strokeWidth={1.75} />
+            </button>
+            <span className="px-2 font-mono text-[11px] tracking-[0.16em] text-muted-foreground">
+              {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+            </span>
+            <button
+              type="button"
+              onClick={() => onNavigate(index + 1)}
+              aria-label="Next garment on rail"
+              className="grid size-6 cursor-pointer place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/10 focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <ChevronRight className="size-3.5" strokeWidth={1.75} />
+            </button>
+          </div>
+        )}
+      </div>
 
-        <div
-          className={cn(
-            "pointer-events-auto flex flex-col gap-4 text-center transition-[opacity,transform] delay-150 duration-500 motion-reduce:transition-none md:text-left",
-            shown ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0",
-          )}
-        >
-          <p className="font-mono text-[11px] tracking-[0.2em] text-muted-foreground">
-            {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-            {item.tag ? ` · ${item.tag}` : ""}
-          </p>
-          <h3 id={titleId} className="text-2xl font-medium tracking-tight sm:text-3xl">
-            {item.name}
-          </h3>
-          {item.description && (
-            <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
-          )}
-          {item.details && item.details.length > 0 && (
-            <ul className="flex flex-wrap justify-center gap-2 md:justify-start">
-              {item.details.map((detail) => (
-                <li
-                  key={detail}
-                  className="rounded-full border border-border bg-card/75 px-3 py-1 text-xs text-muted-foreground"
-                >
-                  {detail}
-                </li>
-              ))}
-            </ul>
-          )}
+      {/* Upper Frameless Open-Air Garment Showcase */}
+      <div className="relative w-full px-4 pb-3 pt-2 sm:px-6">
+        {/* Click empty showroom space around the hanging garment to glide back onto rail */}
+        <div aria-hidden="true" className="absolute inset-0" onClick={dismiss} />
 
-          <div
-            role="group"
-            aria-label={`${labels.front} / ${labels.back}`}
-            className="mt-2 inline-flex justify-center gap-6 md:justify-start"
-          >
-            {(["front", "back"] as const).map((face) => (
-              <button
-                key={face}
-                type="button"
-                aria-pressed={side === face}
-                onClick={() => turnTo(face)}
-                className={cn(
-                  "relative cursor-pointer pb-1.5 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
-                  side === face ? "text-foreground" : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {face === "front" ? labels.front : labels.back}
-                <span
-                  aria-hidden="true"
-                  className={cn(
-                    "absolute inset-x-0 bottom-0 h-px origin-left bg-foreground transition-transform duration-300 motion-reduce:transition-none",
-                    side === face ? "scale-x-100" : "scale-x-0",
-                  )}
-                />
-              </button>
-            ))}
+        <div className="pointer-events-none relative z-10 mx-auto grid w-full max-w-5xl items-center gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
+          <div className="pointer-events-auto flex flex-col items-center gap-2.5">
+            {stage}
+            <span
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full border border-border bg-card/75 px-3.5 py-1 text-[11.5px] text-muted-foreground backdrop-blur-sm transition-opacity duration-500 motion-reduce:transition-none",
+                shown ? "opacity-100" : "opacity-0",
+              )}
+            >
+              <Rotate3d className="size-3.5 text-foreground" />
+              Drag garment to turn 180°
+            </span>
           </div>
 
-          {(onAddToBag || onToggleSave) && (
-            <div className="mt-3 flex items-center justify-center gap-2.5 md:justify-start">
-              {onAddToBag && (
+          <div
+            className={cn(
+              "pointer-events-auto flex flex-col gap-3.5 text-center transition-[opacity,transform] delay-150 duration-500 motion-reduce:transition-none md:text-left",
+              shown ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0",
+            )}
+          >
+            <p className="font-mono text-[11px] tracking-[0.2em] text-muted-foreground">
+              {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+              {item.tag ? ` · ${item.tag}` : ""}
+            </p>
+            <h3 id={titleId} className="text-2xl font-medium tracking-tight sm:text-3xl">
+              {item.name}
+            </h3>
+            {item.description && (
+              <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+            )}
+            {item.details && item.details.length > 0 && (
+              <ul className="flex flex-wrap justify-center gap-2 md:justify-start">
+                {item.details.map((detail) => (
+                  <li
+                    key={detail}
+                    className="rounded-full border border-border bg-card/75 px-3 py-1 text-xs text-muted-foreground"
+                  >
+                    {detail}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <div
+              role="group"
+              aria-label={`${labels.front} / ${labels.back}`}
+              className="mt-1 inline-flex justify-center gap-6 md:justify-start"
+            >
+              {(["front", "back"] as const).map((face) => (
                 <button
+                  key={face}
                   type="button"
-                  onClick={() => {
-                    onAddToBag();
-                    setAdded(true);
-                    window.setTimeout(() => setAdded(false), 1400);
-                  }}
-                  className="inline-flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-full bg-[#3b2116] px-6 text-[12.5px] font-medium tracking-[0.06em] text-[#f6ede2] uppercase shadow-[0_14px_28px_-12px_rgba(59,33,22,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2a1a12] active:scale-[0.98]"
-                >
-                  <ShoppingBag className="size-4" strokeWidth={1.7} />
-                  <span>{added ? "Added to Bag ✓" : `Add to Bag${item.tag ? ` · ${item.tag}` : ""}`}</span>
-                </button>
-              )}
-              {onToggleSave && (
-                <button
-                  type="button"
-                  onClick={onToggleSave}
-                  aria-label={saved ? "Remove from Private Trunk Show" : "Save to Private Trunk Show"}
-                  title={saved ? "Saved in Trunk Show" : "Save to Private Trunk Show"}
+                  aria-pressed={side === face}
+                  onClick={() => turnTo(face)}
                   className={cn(
-                    "grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border transition-all duration-200",
-                    saved
-                      ? "border-[#2a1a12] bg-[#2a1a12] text-[#fbf7f1]"
-                      : "border-border bg-card text-foreground hover:border-[#2a1a12]",
+                    "relative cursor-pointer pb-1.5 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+                    side === face ? "text-foreground" : "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  <Heart className="size-[17px]" fill={saved ? "currentColor" : "none"} strokeWidth={1.7} />
+                  {face === "front" ? labels.front : labels.back}
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "absolute inset-x-0 bottom-0 h-px origin-left bg-foreground transition-transform duration-300 motion-reduce:transition-none",
+                      side === face ? "scale-x-100" : "scale-x-0",
+                    )}
+                  />
                 </button>
-              )}
+              ))}
             </div>
-          )}
+
+            {(onAddToBag || onToggleSave) && (
+              <div className="mt-2 flex items-center justify-center gap-2.5 md:justify-start">
+                {onAddToBag && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onAddToBag();
+                      setAdded(true);
+                      window.setTimeout(() => setAdded(false), 1400);
+                    }}
+                    className="inline-flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-full bg-[#3b2116] px-6 text-[12.5px] font-medium tracking-[0.06em] text-[#f6ede2] uppercase shadow-[0_14px_28px_-12px_rgba(59,33,22,0.55)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#2a1a12] active:scale-[0.98]"
+                  >
+                    <ShoppingBag className="size-4" strokeWidth={1.7} />
+                    <span>{added ? "Added to Bag ✓" : `Add to Bag${item.tag ? ` · ${item.tag}` : ""}`}</span>
+                  </button>
+                )}
+                {onToggleSave && (
+                  <button
+                    type="button"
+                    onClick={onToggleSave}
+                    aria-label={saved ? "Remove from Private Trunk Show" : "Save to Private Trunk Show"}
+                    title={saved ? "Saved in Trunk Show" : "Save to Private Trunk Show"}
+                    className={cn(
+                      "grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border transition-all duration-200",
+                      saved
+                        ? "border-[#2a1a12] bg-[#2a1a12] text-[#fbf7f1]"
+                        : "border-border bg-card text-foreground hover:border-[#2a1a12]",
+                    )}
+                  >
+                    <Heart className="size-[17px]" fill={saved ? "currentColor" : "none"} strokeWidth={1.7} />
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         </div>
+
+        {detailExtra && (
+          <div className="pointer-events-none relative z-10 mt-4 flex justify-center">
+            <button
+              type="button"
+              onClick={() => {
+                extraRef.current?.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+              }}
+              className={cn(
+                "pointer-events-auto group inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/85 px-4 py-1.5 text-[11px] font-medium tracking-[0.14em] text-muted-foreground uppercase shadow-2xs backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-foreground/30 hover:text-foreground",
+                shown ? "opacity-100" : "opacity-0",
+              )}
+            >
+              <span>Explore The Clothing Library</span>
+              <ChevronDown className="size-3.5 transition-transform duration-200 group-hover:translate-y-0.5" strokeWidth={1.8} />
+            </button>
+          </div>
+        )}
       </div>
+
+      {/* Supplementary Section Content (e.g. WardrobeLibrary) extending Section 5 height naturally */}
+      {detailExtra && (
+        <div ref={extraRef} className="relative z-20 px-2 pb-8 sm:px-6">
+          {detailExtra}
+        </div>
+      )}
     </div>
   );
 }
