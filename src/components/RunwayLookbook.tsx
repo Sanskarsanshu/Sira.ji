@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useAtelier } from '../context/AtelierContext';
 import { api } from '../services/api';
 import type { CapsulePiece } from '../types';
-import './TryTheLookSection.css';
 
 const MODELS =
   'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261102_042056_1a704ff7-b0e5-4a9f-bbda-62392b819fb6.png&w=3840&q=85';
@@ -20,6 +19,7 @@ const LOOKS: [number, number][] = [
 ];
 const Y0 = 48;
 const Y1 = 496;
+const FIRST = 15;
 
 // Each piece's box on the 960 x 720 sheet: x0, x1, y0, y1, name, price
 interface ItemData {
@@ -45,59 +45,6 @@ const ITEMS: ItemData[] = [
   { id: 'p-10', x0: 316, x1: 396, y0: 482, y1: 698, name: 'Ivory Straight Trousers', price: '$690' },
   { id: 'p-11', x0: 530, x1: 672, y0: 508, y1: 682, name: 'Sculpted Ruffle Top', price: '$1,120' },
   { id: 'p-12', x0: 754, x1: 916, y0: 484, y1: 700, name: 'Pleated Maxi Skirt', price: '$1,340' },
-];
-
-export interface FemaleLookMeta {
-  index: number;
-  numStr: string;
-  name: string;
-  desc: string;
-  productIds: string[];
-}
-
-export const FEMALE_LOOKS: FemaleLookMeta[] = [
-  {
-    index: 0,
-    numStr: '15',
-    name: 'Feather & Silk Silhouette',
-    desc: 'Blush ostrich feather jacket with fluid Como silk wide-leg trousers and gold-tone accessories.',
-    productIds: ['p-1', 'p-2', 'p-4'],
-  },
-  {
-    index: 1,
-    numStr: '16',
-    name: 'Pleated Riviera Evening',
-    desc: 'Architectural pleated gown in sage silk charmeuse cinched with an artisanal gold waist belt.',
-    productIds: ['p-3', 'p-4', 'p-6'],
-  },
-  {
-    index: 2,
-    numStr: '17',
-    name: 'Champagne Satin Trench',
-    desc: 'Fluid double-breasted satin trench dress paired with structured calfskin top-handle bag.',
-    productIds: ['p-5', 'p-6', 'p-4'],
-  },
-  {
-    index: 3,
-    numStr: '18',
-    name: 'Billow Silk Poise',
-    desc: 'Voluminous gathered silk blouse in rose-dust paired with tailored tie-waist pleated trousers.',
-    productIds: ['p-7', 'p-8', 'p-6'],
-  },
-  {
-    index: 4,
-    numStr: '19',
-    name: 'Powder Blue Couture',
-    desc: 'Double-faced cashmere long coat over high-waist ivory straight trousers with quiet poise.',
-    productIds: ['p-9', 'p-10', 'p-6'],
-  },
-  {
-    index: 5,
-    numStr: '20',
-    name: 'Sculpted Ruffle Statement',
-    desc: 'Tiered ruffle bodice in organza silk over dramatic flowing pleated floor-length maxi skirt.',
-    productIds: ['p-11', 'p-12', 'p-4'],
-  },
 ];
 
 // Depth stops from d = -1 (leaving past the rail) to d = 5 (arriving out of the haze)
@@ -136,8 +83,9 @@ export const RunwayLookbook: React.FC = () => {
   const rollRef = useRef<HTMLSpanElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
 
-  // Model element refs
+  // Model & Card element refs
   const modelRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const cardRefs = useRef<(HTMLElement | null)[]>([]);
 
   // Motion and interaction state stored in refs for 60fps RAF loop
   const pRef = useRef(0);
@@ -147,6 +95,7 @@ export const RunwayLookbook: React.FC = () => {
   const WRef = useRef(0);
   const HRef = useRef(0);
   const baseRef = useRef(0);
+  const cardSRef = useRef(0);
   const sideRef = useRef(false);
   const calmRef = useRef(false);
 
@@ -194,48 +143,6 @@ export const RunwayLookbook: React.FC = () => {
     'Sera.ji Washed Linen Trench',
   ];
 
-  const [pState, setPState] = useState(0);
-  const [isAddingBundle, setIsAddingBundle] = useState(false);
-  const [pickingKey, setPickingKey] = useState<string | null>(null);
-  const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
-  const [addedItems, setAddedItems] = useState<Record<string, boolean>>({});
-
-  const activeIdx = wrap(Math.round(pState), N);
-  const currentLook = FEMALE_LOOKS[activeIdx];
-  const currentProducts = currentLook.productIds
-    .map((id) => ITEMS.find((item) => item.id === id))
-    .filter(Boolean) as ItemData[];
-
-  const parsePrice = (priceStr: string) =>
-    parseFloat(priceStr.replace(/[^0-9.]/g, '')) || 0;
-  const bundleOriginalPrice = currentProducts.reduce(
-    (sum, item) => sum + parsePrice(item.price),
-    0
-  );
-  const bundleDiscountedPrice = bundleOriginalPrice * 0.9;
-
-  const jumpToLook = (idx: number) => {
-    let d = (idx - activeIdx) % N;
-    if (d > 3) d -= 6;
-    else if (d < -3) d += 6;
-    targetRef.current = Math.round(targetRef.current) + d;
-  };
-
-  const handleAddFullLook = () => {
-    setIsAddingBundle(true);
-    setTimeout(() => {
-      setIsAddingBundle(false);
-      addToCart(currentProducts.length);
-      currentProducts.forEach((_, itemIdx) => {
-        setAddedItems((prev) => ({ ...prev, [`${activeIdx}-${itemIdx}`]: true }));
-      });
-      showToast(
-        `Look ${currentLook.numStr}: ${currentLook.name} (3 pieces) added to bag (10% discount) ✓`,
-        'gold'
-      );
-    }, 400);
-  };
-
   // Sizing calculation
   const updateSize = useCallback(() => {
     const stage = stageRef.current;
@@ -260,6 +167,12 @@ export const RunwayLookbook: React.FC = () => {
       }
     });
 
+    const cardS = side ? 160 : rail.clientHeight / 3;
+    cardSRef.current = cardS;
+    cardRefs.current.forEach((c) => {
+      if (c) c.style.height = side ? '100%' : `${cardS}px`;
+    });
+
     dirtyRef.current = true;
   }, []);
 
@@ -268,6 +181,8 @@ export const RunwayLookbook: React.FC = () => {
     const W = WRef.current;
     const H = HRef.current;
     const base = baseRef.current;
+    const side = sideRef.current;
+    const cardS = cardSRef.current;
     const p = pRef.current;
 
     // Paint Models
@@ -295,6 +210,17 @@ export const RunwayLookbook: React.FC = () => {
       el.style.filter = f < 0.2 ? 'none' : `blur(${f.toFixed(1)}px)`;
       el.style.opacity = mix(KO).toFixed(3);
       el.style.zIndex = String(100 - Math.round(d * 10));
+    });
+
+    // Paint Rail Cards
+    const all = cardS * ITEMS.length;
+    cardRefs.current.forEach((c, i) => {
+      if (!c) return;
+      let y = wrap(i * cardS - p * 2 * cardS, all);
+      if (y > all - cardS) y -= all;
+      c.style.transform = side
+        ? `translate3d(${y.toFixed(1)}px,0,0)`
+        : `translate3d(0,${y.toFixed(1)}px,0)`;
     });
 
     // Paint Rolling Look Number
@@ -330,7 +256,6 @@ export const RunwayLookbook: React.FC = () => {
       if (pRef.current !== was || dirtyRef.current) {
         dirtyRef.current = false;
         paint();
-        setPState(pRef.current);
       }
 
       // Cursor ring follow
@@ -453,6 +378,13 @@ export const RunwayLookbook: React.FC = () => {
   };
 
   const isItemSaved = (id: string) => curatedPieces.some((p) => p.id === id);
+
+  // Add to cart handler
+  const handleAddToCart = (item: ItemData, e: React.MouseEvent) => {
+    e.stopPropagation();
+    addToCart(1);
+    showToast(`Added ${item.name} (${item.price}) to cart ✓`, 'gold');
+  };
 
   // Interactive AI prompt submission
   const handlePromptSubmit = async (text: string) => {
@@ -679,182 +611,88 @@ export const RunwayLookbook: React.FC = () => {
             )}
           </div>
 
-          {/* Complete the Look Card (Positioned in Bottom-Left of Main Runway Area) */}
-          <div className="ttl-runway-bundle-card">
-            <div className="ttl-bundle-row">
-              <div>
-                <div className="ttl-bundle-title">Complete the look</div>
-                <div className="ttl-bundle-note">Bundle all 3 and save 10%</div>
-              </div>
-              <div className="ttl-bundle-pricing">
-                <s>${bundleOriginalPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</s>
-                <strong>${bundleDiscountedPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-              </div>
-            </div>
-
-            <button
-              className="ttl-cta-bundle-btn"
-              type="button"
-              disabled={isAddingBundle}
-              onClick={handleAddFullLook}
-            >
-              <span>{isAddingBundle ? 'Adding to bag…' : 'ADD FULL LOOK TO BAG →'}</span>
-            </button>
-          </div>
-
-          {/* Bottom Controls Bar (Rolling Look Number & Segmented Ticks, No Prev/Play/Next buttons) */}
-          <div className="ttl-controls-bar">
-            <div className="ttl-rolling-look">
+          {/* LOOK ROLLING NUMBER AT BOTTOM LEFT */}
+          <div className="tag runway-look-tag">
+            <div className="look wide" aria-live="polite">
               <span>Look</span>
-              <span className="ttl-look-win">
-                <span className="ttl-look-roll" ref={rollRef}>
-                  {FEMALE_LOOKS.map((look) => (
-                    <b key={look.index}>{look.numStr}</b>
+              <span className="win">
+                <span className="roll" ref={rollRef}>
+                  {Array.from({ length: N + 1 }).map((_, idx) => (
+                    <b key={idx}>{FIRST + (idx % N)}</b>
                   ))}
-                  <b>15</b>
                 </span>
               </span>
             </div>
-
-            {/* Segmented Ticks */}
-            <div className="ttl-ticks-group">
-              {FEMALE_LOOKS.map((look, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  className={`ttl-tick-btn ${i === activeIdx ? 'active' : ''} ${i < activeIdx ? 'past' : ''}`}
-                  onClick={() => jumpToLook(i)}
-                  aria-label={`Look ${look.numStr}: ${look.name}`}
-                >
-                  <div className="ttl-tick-track">
-                    <div className="ttl-tick-fill" />
-                  </div>
-                  <span className="ttl-tick-label">
-                    {look.numStr}
-                    <span className="ttl-tick-name">&nbsp;&nbsp;{look.name}</span>
-                  </span>
-                </button>
-              ))}
-            </div>
+            <button
+              className="shop wide runway-order-link"
+              type="button"
+              onClick={() => openBooking('runway-fitting')}
+            >
+              Shop the look
+            </button>
           </div>
 
           {/* Follower Ring Cursor */}
           <div className="ring" ref={ringRef} id="ring" />
         </section>
 
-        {/* PRODUCT RAIL - Exactly Three Product Cards, No Header */}
-        <aside className="rail runway-rail" aria-label="Pieces in this look">
-          <div className="ttl-cards-track" aria-label="Curated pieces for this look">
-            {currentProducts.map((item, itemIdx) => {
-              const isSaved = isItemSaved(item.id);
-              const rowKey = `${activeIdx}-${itemIdx}`;
-              const isPicking = pickingKey === rowKey;
-              const isAdded = !!addedItems[rowKey];
-              const sizes = ['36', '38', '40', '42'];
-              const chosenSize = selectedSizes[rowKey] || sizes[0];
-
-              return (
-                <article
-                  key={item.id}
-                  className={`card runway-card ttl-runway-card ${itemIdx % 2 ? 'alt' : ''}`}
+        {/* PRODUCT RAIL (12 PIECES LOOPING TRACK) */}
+        <aside className="rail runway-rail" ref={railRef} aria-label="Pieces in this look">
+          {ITEMS.map((item, idx) => {
+            const isSaved = isItemSaved(item.id);
+            return (
+              <article
+                key={item.id}
+                className={`card runway-card ${idx % 2 ? 'alt' : ''}`}
+                ref={(el) => {
+                  cardRefs.current[idx] = el;
+                }}
+              >
+                <button
+                  className="fav"
+                  type="button"
+                  aria-pressed={isSaved}
+                  aria-label={`Save ${item.name}`}
+                  onClick={(e) => handleToggleFavorite(item, e)}
+                  title={isSaved ? 'Saved in Trunk Show' : 'Add to Trunk Show'}
                 >
-                  <button
-                    className="fav"
-                    type="button"
-                    aria-pressed={isSaved}
-                    aria-label={`Save ${item.name}`}
-                    onClick={(e) => handleToggleFavorite(item, e)}
-                    title={isSaved ? 'Saved in Trunk Show' : 'Add to Trunk Show'}
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 20S3.5 15 3.5 9A4.6 4.6 0 0 1 12 6.6 4.600 4.600 0 0 1 20.500 9C20.500 15 12 20 12 20Z" />
+                  </svg>
+                </button>
+
+                <span className="shot">
+                  <svg
+                    viewBox={`${item.x0} ${item.y0} ${item.x1 - item.x0} ${item.y1 - item.y0}`}
+                    aria-hidden="true"
+                    style={{ width: '100%', height: '100%', display: 'block' }}
                   >
-                    <svg viewBox="0 0 24 24">
-                      <path d="M12 20S3.5 15 3.5 9A4.6 4.6 0 0 1 12 6.6 4.600 4.600 0 0 1 20.500 9C20.500 15 12 20 12 20Z" />
-                    </svg>
-                  </button>
-
-                  <span className="shot">
                     <svg
+                      x={item.x0}
+                      y={item.y0}
+                      width={item.x1 - item.x0}
+                      height={item.y1 - item.y0}
                       viewBox={`${item.x0} ${item.y0} ${item.x1 - item.x0} ${item.y1 - item.y0}`}
-                      aria-hidden="true"
-                      style={{ width: '100%', height: '100%', display: 'block' }}
                     >
-                      <svg
-                        x={item.x0}
-                        y={item.y0}
-                        width={item.x1 - item.x0}
-                        height={item.y1 - item.y0}
-                        viewBox={`${item.x0} ${item.y0} ${item.x1 - item.x0} ${item.y1 - item.y0}`}
-                      >
-                        <image href={PIECES} width={960} height={720} />
-                      </svg>
+                      <image href={PIECES} width={960} height={720} />
                     </svg>
-                    <span className="ttl-card-badge" title={`Piece ${itemIdx + 1}`}>
-                      {itemIdx + 1}
-                    </span>
-                  </span>
+                  </svg>
+                </span>
 
-                  <div className="meta">
-                    <div>
-                      <span className="ttl-vendor-tag">SERA.JI ATELIER</span>
-                      <h3 className="wide">{item.name}</h3>
-                      <span>{item.price}</span>
-                    </div>
-
-                    <button
-                      className={`add ${isPicking ? 'picking' : ''} ${isAdded ? 'added' : ''}`}
-                      type="button"
-                      aria-label={`Select size for ${item.name}`}
-                      onClick={() => {
-                        if (!isAdded) {
-                          setPickingKey(isPicking ? null : rowKey);
-                        }
-                      }}
-                      title={isPicking ? 'Close size picker' : 'Select size and add to bag'}
-                    />
-                  </div>
-
-                  {/* Size Picker Pills & Add to Bag */}
-                  {isPicking && (
-                    <div className="ttl-picker-box">
-                      <div className="ttl-picker-header">
-                        <span className="ttl-picker-legend">Atelier Size</span>
-                        <span className="ttl-picker-selected">
-                          Selected: <b>IT {chosenSize}</b>
-                        </span>
-                      </div>
-
-                      <div className="ttl-pills-row">
-                        {sizes.map((s) => (
-                          <button
-                            key={s}
-                            type="button"
-                            className={`ttl-pill-label ${chosenSize === s ? 'checked' : ''}`}
-                            onClick={() => setSelectedSizes((prev) => ({ ...prev, [rowKey]: s }))}
-                          >
-                            {s}
-                          </button>
-                        ))}
-                      </div>
-
-                      <button
-                        className="ttl-confirm-btn"
-                        type="button"
-                        onClick={() => {
-                          addToCart(1);
-                          setAddedItems((prev) => ({ ...prev, [rowKey]: true }));
-                          setPickingKey(null);
-                          showToast(`Added ${item.name} (IT ${chosenSize}) to bag ✓`, 'gold');
-                        }}
-                      >
-                        <span>Add to bag</span>
-                        <span>·</span>
-                        <span>{item.price}</span>
-                      </button>
-                    </div>
-                  )}
-                </article>
-              );
-            })}
-          </div>
+                <div className="meta">
+                  <h3 className="wide">{item.name}</h3>
+                  <span>{item.price}</span>
+                  <button
+                    className="add"
+                    type="button"
+                    aria-label={`Add ${item.name} to cart`}
+                    onClick={(e) => handleAddToCart(item, e)}
+                    title="Add piece to order"
+                  />
+                </div>
+              </article>
+            );
+          })}
         </aside>
       </main>
     </div>
