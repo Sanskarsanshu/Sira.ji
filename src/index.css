@@ -4,6 +4,13 @@
 
 @theme {
   --font-sans: "Inter Tight", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --color-background: #f8f3eb;
+  --color-foreground: #2a1a12;
+  --color-muted-foreground: #6f5f53;
+  --color-card: #fffdf9;
+  --color-card-foreground: #2a1a12;
+  --color-border: rgba(42, 26, 18, 0.14);
+  --color-ring: #2a1a12;
 }
 
 :root {
@@ -58,31 +65,63 @@
 
   .sera-shelf-scope *,
   .sera-shelf-scope ::before,
-  .sera-shelf-scope ::after {
+  .sera-shelf-scope ::after,
+  [data-slot="clothing-rail-hero"] *,
+  [data-slot="clothing-rail-hero"] ::before,
+  [data-slot="clothing-rail-hero"] ::after,
+  [data-slot="clothing-rail-detail"] *,
+  [data-slot="clothing-rail-detail"] ::before,
+  [data-slot="clothing-rail-detail"] ::after {
     border-style: solid;
     border-width: 0;
-    border-color: #d9d4cd;
+    border-color: var(--color-border);
   }
 
-  .sera-shelf-scope button {
+  .sera-shelf-scope button,
+  [data-slot="clothing-rail-hero"] button,
+  [data-slot="clothing-rail-detail"] button {
     background-color: transparent;
     color: inherit;
     appearance: none;
     -webkit-appearance: none;
   }
 
-  .sera-shelf-scope svg {
+  .sera-shelf-scope svg,
+  [data-slot="clothing-rail-hero"] svg,
+  [data-slot="clothing-rail-detail"] svg {
     display: block;
     vertical-align: middle;
+  }
+
+  [data-slot="clothing-rail-hero"] ul,
+  [data-slot="clothing-rail-detail"] ul {
+    list-style: none;
   }
 
   .sera-shelf-scope h1,
   .sera-shelf-scope h2,
   .sera-shelf-scope h3,
-  .sera-shelf-scope h4 {
+  .sera-shelf-scope h4,
+  [data-slot="clothing-rail-hero"] h2,
+  [data-slot="clothing-rail-detail"] h3 {
     font-size: inherit;
     font-weight: inherit;
   }
+}
+
+@keyframes seraFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in.fade-in {
+  animation: seraFadeIn 300ms var(--ease) both;
 }
 
 .wrap {
