@@ -306,7 +306,6 @@ export const TryTheLookSection: React.FC = () => {
   } = useAtelier();
 
   const [pState, setPState] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [hotPin, setHotPin] = useState<number | null>(null);
 
@@ -351,7 +350,6 @@ export const TryTheLookSection: React.FC = () => {
   const stRef = useRef(0);
   const movedRef = useRef(0);
   const wheelTimerRef = useRef<number | null>(null);
-  const autoplayTimerRef = useRef<number | null>(null);
   const isEngagedRef = useRef(false);
 
   const activeIdx = wrap(Math.round(pState), N);
@@ -565,24 +563,6 @@ export const TryTheLookSection: React.FC = () => {
     }
   };
 
-  // Autoplay timer
-  useEffect(() => {
-    if (!isPlaying || isLightboxOpen || isEngagedRef.current) {
-      if (autoplayTimerRef.current) clearTimeout(autoplayTimerRef.current);
-      return;
-    }
-
-    autoplayTimerRef.current = window.setTimeout(() => {
-      if (!downRef.current && !isLightboxOpen && !isEngagedRef.current) {
-        targetRef.current = Math.round(targetRef.current) + 1;
-      }
-    }, 5000);
-
-    return () => {
-      if (autoplayTimerRef.current) clearTimeout(autoplayTimerRef.current);
-    };
-  }, [isPlaying, pState, isLightboxOpen]);
-
   // Jump to specific look
   const jumpToLook = (idx: number) => {
     let d = (idx - activeIdx) % N;
@@ -628,7 +608,6 @@ export const TryTheLookSection: React.FC = () => {
     const variant = product.variants.find((v) => v.o[0] === chosenSize) || product.variants[0];
 
     isEngagedRef.current = true;
-    setIsPlaying(false);
     setAddedItems((prev) => ({ ...prev, [rowKey]: true }));
     setPickingKey(null);
 
@@ -664,7 +643,6 @@ export const TryTheLookSection: React.FC = () => {
   const handleAddFullLook = () => {
     setIsAddingBundle(true);
     isEngagedRef.current = true;
-    setIsPlaying(false);
 
     setTimeout(() => {
       setIsAddingBundle(false);
