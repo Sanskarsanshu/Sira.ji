@@ -626,9 +626,12 @@
   border-radius: 4px;
 }
 
-/* The Runway Card in Streetwear */
+/* The Runway Card in Streetwear & Female Haute Couture */
 .ttl-runway-card {
   position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  will-change: auto !important;
   width: 100% !important;
   display: flex;
   flex-direction: column;
@@ -713,6 +716,19 @@
 }
 
 .ttl-runway-card:hover .ttl-shot-link img {
+  transform: scale(1.08);
+}
+
+.ttl-runway-card .shot > svg {
+  max-width: 86%;
+  max-height: 86%;
+  width: auto !important;
+  height: 140px !important;
+  object-fit: contain;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ttl-runway-card:hover .shot > svg {
   transform: scale(1.08);
 }
 
@@ -921,15 +937,24 @@
   transform: translateY(-1px);
 }
 
-/* Bundle Footer */
-.ttl-bundle-footer {
-  padding: 18px 24px 22px;
-  background: #ffffff;
-  border-top: 1px solid rgba(22, 25, 31, 0.08);
+/* Runway Complete the Look Bundle Card (Bottom-Left of Runway Area) */
+.ttl-runway-bundle-card {
+  position: absolute;
+  left: 28px;
+  bottom: 72px;
+  z-index: 25;
+  width: min(340px, calc(100% - 56px));
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(22, 25, 31, 0.08);
+  border-radius: 14px;
+  padding: 14px 18px;
+  box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.12);
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  flex-shrink: 0;
+  gap: 10px;
 }
 
 .ttl-bundle-row {
@@ -939,13 +964,17 @@
 }
 
 .ttl-bundle-title {
-  font-size: 13px;
-  font-weight: 600;
+  font-family: 'Michroma', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   color: #16191f;
+  font-weight: 600;
+  margin-bottom: 2px;
 }
 
 .ttl-bundle-note {
-  font-size: 10.5px;
+  font-size: 10px;
   color: #737b86;
 }
 
@@ -957,30 +986,31 @@
 
 .ttl-bundle-pricing s {
   font-size: 11px;
-  color: #737b86;
+  color: #a4adb8;
+  text-decoration: line-through;
 }
 
 .ttl-bundle-pricing strong {
   font-family: 'Michroma', sans-serif;
-  font-size: 14.5px;
+  font-size: 14px;
   color: #16191f;
 }
 
 .ttl-cta-bundle-btn {
-  height: 48px;
+  height: 40px;
   background: #16191f;
   color: #ffffff;
   border: none;
   border-radius: 99px;
   font-family: 'Michroma', sans-serif;
-  font-size: 10px;
+  font-size: 9.5px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   cursor: pointer;
   transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
 }
@@ -988,7 +1018,7 @@
 .ttl-cta-bundle-btn:hover {
   background: #2a303c;
   transform: translateY(-1px);
-  box-shadow: 0 12px 24px -10px rgba(22, 25, 31, 0.4);
+  box-shadow: 0 10px 20px -8px rgba(22, 25, 31, 0.4);
 }
 
 .ttl-cta-bundle-btn:disabled {
@@ -1004,7 +1034,7 @@
   }
   .ttl-main {
     grid-template-columns: 1fr;
-    grid-template-rows: 480px auto;
+    grid-template-rows: 520px auto;
   }
   .ttl-controls-bar {
     left: 14px;
@@ -1014,6 +1044,11 @@
   .ttl-glass-suite {
     left: 14px;
     top: 14px;
+    width: calc(100% - 28px);
+  }
+  .ttl-runway-bundle-card {
+    left: 14px;
+    bottom: 68px;
     width: calc(100% - 28px);
   }
 }

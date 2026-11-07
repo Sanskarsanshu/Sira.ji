@@ -303,8 +303,6 @@ export const TryTheLookSection: React.FC = () => {
     toggleCuratePiece,
     isPieceCurated,
     addToCart,
-    cartCount,
-    openCurationDrawer,
   } = useAtelier();
 
   const [pState, setPState] = useState(0);
@@ -358,6 +356,9 @@ export const TryTheLookSection: React.FC = () => {
 
   const activeIdx = wrap(Math.round(pState), N);
   const currentLook = LOOKS[activeIdx];
+  const currentProducts = currentLook.products.map((k) => PRODUCTS[k]).filter(Boolean);
+  const bundleOriginalPrice = currentProducts.reduce((sum, p) => sum + p.price, 0);
+  const bundleDiscountedPrice = bundleOriginalPrice * 0.9;
 
   // Persist bag items
   useEffect(() => {
@@ -853,7 +854,30 @@ export const TryTheLookSection: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Bottom Controls Bar (Rolling Look Number & Segmented Ticks) */}
+                {/* Complete the Look Card (Positioned in Bottom-Left of Main Runway Area) */}
+                <div className="ttl-runway-bundle-card">
+                  <div className="ttl-bundle-row">
+                    <div>
+                      <div className="ttl-bundle-title">Complete the look</div>
+                      <div className="ttl-bundle-note">Bundle all 3 and save 10%</div>
+                    </div>
+                    <div className="ttl-bundle-pricing">
+                      <s>${bundleOriginalPrice.toFixed(2)}</s>
+                      <strong>${bundleDiscountedPrice.toFixed(2)}</strong>
+                    </div>
+                  </div>
+
+                  <button
+                    className="ttl-cta-bundle-btn"
+                    type="button"
+                    disabled={isAddingBundle}
+                    onClick={handleAddFullLook}
+                  >
+                    <span>{isAddingBundle ? 'Adding to bag…' : 'ADD FULL LOOK TO BAG →'}</span>
+                  </button>
+                </div>
+
+                {/* Bottom Controls Bar (Rolling Look Number & Segmented Ticks, No Prev/Play/Next buttons) */}
                 <div className="ttl-controls-bar">
                   <div className="ttl-rolling-look">
                     <span>Look</span>
@@ -887,76 +911,14 @@ export const TryTheLookSection: React.FC = () => {
                       </button>
                     ))}
                   </div>
-
-                  {/* Prev / Play / Next */}
-                  <button
-                    className="ttl-nav-icon-btn"
-                    type="button"
-                    onClick={() => {
-                      targetRef.current = Math.round(targetRef.current) - 1;
-                    }}
-                    aria-label="Previous look"
-                  >
-                    <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                      <path d="M15 18l-6-6 6-6" />
-                    </svg>
-                  </button>
-
-                  <button
-                    className="ttl-nav-icon-btn"
-                    type="button"
-                    onClick={() => setIsPlaying(!isPlaying)}
-                    aria-label="Toggle autoplay"
-                  >
-                    {isPlaying ? (
-                      <svg width={14} height={14} viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                      </svg>
-                    ) : (
-                      <svg width={14} height={14} viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                    )}
-                  </button>
-
-                  <button
-                    className="ttl-nav-icon-btn"
-                    type="button"
-                    onClick={() => {
-                      targetRef.current = Math.round(targetRef.current) + 1;
-                    }}
-                    aria-label="Next look"
-                  >
-                    <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                      <path d="M9 18l6-6-6-6" />
-                    </svg>
-                  </button>
                 </div>
 
                 {/* Follower Ring Cursor */}
                 <div className="ring" ref={ringRef} />
               </section>
 
-              {/* RIGHT PANEL ("In this look") */}
+              {/* RIGHT PANEL - Exactly Three Product Cards, No Header */}
               <aside className="ttl-panel" aria-label="Pieces in this look">
-                <div className="ttl-panel-header">
-                  <div className="ttl-panel-title-wrap">
-                    <span className="ttl-panel-eyebrow">Look {currentLook.numStr} · {currentLook.name}</span>
-                    <h3 className="ttl-panel-title">In this look</h3>
-                  </div>
-                  <button
-                    className="ttl-bag-counter-pill"
-                    type="button"
-                    onClick={openCurationDrawer}
-                    title="View Saved Trunk Show & Bag"
-                  >
-                    <svg width={13} height={14} viewBox="0 0 24 26" fill="none" stroke="currentColor" strokeWidth={1.8}>
-                      <path d="M4 8h16l1 16H3L4 8zM8 8V6a4 4 0 0 1 8 0v2" />
-                    </svg>
-                    <span>Bag ({cartCount})</span>
-                  </button>
-                </div>
-
                 <div className="ttl-cards-track" aria-label="Curated pieces for this look">
                   {currentLook.products.map((productKey, itemIdx) => {
                     const product = PRODUCTS[productKey];
@@ -1063,32 +1025,6 @@ export const TryTheLookSection: React.FC = () => {
                       </article>
                     );
                   })}
-                </div>
-
-                {/* Complete the Look Bundle Footer */}
-                <div className="ttl-bundle-footer">
-                  <div className="ttl-bundle-row">
-                    <div>
-                      <div className="ttl-bundle-title">Complete the look</div>
-                      <div className="ttl-bundle-note">Bundle all 3 and save 10%</div>
-                    </div>
-                    <div className="ttl-bundle-pricing">
-                      <s>$547.00</s>
-                      <strong>$492.30</strong>
-                    </div>
-                  </div>
-
-                  <button
-                    className="ttl-cta-bundle-btn"
-                    type="button"
-                    disabled={isAddingBundle}
-                    onClick={handleAddFullLook}
-                  >
-                    <span>{isAddingBundle ? 'Adding to bag…' : 'Add full look to bag'}</span>
-                    <svg width={18} height={12} viewBox="0 0 26 14" fill="none" stroke="currentColor" strokeWidth={2}>
-                      <path d="M1 7h24M19 1l6 6-6 6" />
-                    </svg>
-                  </button>
                 </div>
               </aside>
             </main>
