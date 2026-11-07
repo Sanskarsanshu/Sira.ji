@@ -213,7 +213,7 @@ export const EditorialSection: React.FC = () => {
               <div className="ml-auto flex items-center gap-3.5">
                 <span className="hidden items-center gap-1.5 text-[11.5px] font-medium text-[#7a6a5e] lg:inline-flex">
                   <MoveHorizontal className="size-3.5 text-[#2a1a12]" />
-                  Brush or drag hangers · Click to lift &amp; turn 180°
+                  Brush or drag hangers · Click any piece to inspect front &amp; back
                 </span>
                 <button
                   type="button"

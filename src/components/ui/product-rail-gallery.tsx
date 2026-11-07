@@ -1,8 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { createPortal } from "react-dom";
-import { Heart, Rotate3d, ShoppingBag, X } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Heart, Rotate3d, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type GarmentKind = "tee" | "knit" | "hoodie" | "shirt" | "jacket" | "coat";
@@ -35,6 +34,7 @@ export interface ClothingRailHeroLabels {
   back: string;
   close: string;
   show: string;
+  backToRail?: string;
 }
 
 export interface ClothingRailHeroProps extends React.ComponentProps<"section"> {
@@ -72,7 +72,13 @@ const GAP = 0.035;
 const MAX_H = 400;
 const MIN_WIDE_H = 200;
 const CAROUSEL_H = 340;
-const DEFAULT_LABELS: ClothingRailHeroLabels = { front: "Front", back: "Back", close: "Close", show: "Show" };
+const DEFAULT_LABELS: ClothingRailHeroLabels = {
+  front: "Front",
+  back: "Back",
+  close: "Close",
+  show: "Show",
+  backToRail: "Back to Rail",
+};
 
 type Tone = { d: string; t: number };
 type Art = {
@@ -950,132 +956,158 @@ export function ClothingRailHero({
       )}
 
       <div
-        ref={stageRef}
-        data-stage
-        role="group"
-        aria-label={heading ?? "Clothing rail"}
-        className="relative mt-5 w-full touch-pan-y select-none"
-        style={{ height: Math.round(railY + h * bottom + h * 0.05 + 12), overflowX: "clip" }}
-        onPointerMove={onPointerMove}
-        onPointerDown={onPointerDown}
-        onPointerUp={(event) => finishPointer(event, false)}
-        onPointerCancel={(event) => finishPointer(event, true)}
-        onPointerLeave={(event) => { if (event.pointerType === "mouse" && pointer.current.id < 0 && !size.carousel && !document.activeElement?.matches("[data-garment]:focus-visible")) choose(null); }}
-        onKeyDown={onKeyDown}
+        className="relative grid grid-cols-1 items-start"
+        style={{ clipPath: "inset(0px -100vw -100vh -100vw)" }}
       >
-        <div aria-hidden="true" data-rail className="pointer-events-none absolute inset-x-0 z-0" style={{ top: railY - railR, height: railR * 2 }}>
-          <div className="absolute inset-x-0 h-3 rounded-full bg-foreground/10 blur-[5px]" style={{ top: railR * 2 + 1 }} />
-          <div className="absolute inset-0 rounded-full" style={{ background: "linear-gradient(to bottom, color-mix(in oklab, var(--color-muted-foreground) 35%, white) 0%, white 18%, color-mix(in oklab, var(--color-muted-foreground) 70%, white) 38%, var(--color-muted-foreground) 62%, color-mix(in oklab, var(--color-muted-foreground) 55%, black) 100%)", boxShadow: "0 1px 0 color-mix(in oklab, var(--color-foreground) 18%, transparent)" }} />
-          <div className="absolute inset-0 rounded-full opacity-40 mix-blend-overlay" style={{ background: "repeating-linear-gradient(90deg, transparent 0 2px, color-mix(in oklab, white 40%, transparent) 2px 3px, transparent 3px 7px)" }} />
-          {[0, 1].map((side) => (
-            <div key={side} className="absolute top-1/2 h-7 w-4 -translate-y-1/2 rounded-[3px]" style={{ [side ? "right" : "left"]: 6, background: "linear-gradient(to right, color-mix(in oklab, var(--color-muted-foreground) 60%, white), var(--color-muted-foreground) 55%, color-mix(in oklab, var(--color-muted-foreground) 60%, black))", boxShadow: "0 3px 6px color-mix(in oklab, var(--color-foreground) 18%, transparent)" }}>
-              <span className="absolute left-1/2 top-1 size-1 -translate-x-1/2 rounded-full bg-foreground/35" />
-              <span className="absolute bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-foreground/35" />
+        <div
+          aria-hidden={openIndex !== null || undefined}
+          className={cn(
+            "col-start-1 row-start-1 min-w-0 transition-opacity duration-300 motion-reduce:transition-none",
+            openIndex !== null && "pointer-events-none select-none opacity-0",
+          )}
+        >
+          <div
+            ref={stageRef}
+            data-stage
+            role="group"
+            aria-label={heading ?? "Clothing rail"}
+            className="relative mt-5 w-full touch-pan-y select-none"
+            style={{ height: Math.round(railY + h * bottom + h * 0.05 + 12), overflowX: "clip" }}
+            onPointerMove={onPointerMove}
+            onPointerDown={onPointerDown}
+            onPointerUp={(event) => finishPointer(event, false)}
+            onPointerCancel={(event) => finishPointer(event, true)}
+            onPointerLeave={(event) => { if (event.pointerType === "mouse" && pointer.current.id < 0 && !size.carousel && !document.activeElement?.matches("[data-garment]:focus-visible")) choose(null); }}
+            onKeyDown={onKeyDown}
+          >
+            <div aria-hidden="true" data-rail className="pointer-events-none absolute inset-x-0 z-0" style={{ top: railY - railR, height: railR * 2 }}>
+              <div className="absolute inset-x-0 h-3 rounded-full bg-foreground/10 blur-[5px]" style={{ top: railR * 2 + 1 }} />
+              <div className="absolute inset-0 rounded-full" style={{ background: "linear-gradient(to bottom, color-mix(in oklab, var(--color-muted-foreground) 35%, white) 0%, white 18%, color-mix(in oklab, var(--color-muted-foreground) 70%, white) 38%, var(--color-muted-foreground) 62%, color-mix(in oklab, var(--color-muted-foreground) 55%, black) 100%)", boxShadow: "0 1px 0 color-mix(in oklab, var(--color-foreground) 18%, transparent)" }} />
+              <div className="absolute inset-0 rounded-full opacity-40 mix-blend-overlay" style={{ background: "repeating-linear-gradient(90deg, transparent 0 2px, color-mix(in oklab, white 40%, transparent) 2px 3px, transparent 3px 7px)" }} />
+              {[0, 1].map((side) => (
+                <div key={side} className="absolute top-1/2 h-7 w-4 -translate-y-1/2 rounded-[3px]" style={{ [side ? "right" : "left"]: 6, background: "linear-gradient(to right, color-mix(in oklab, var(--color-muted-foreground) 60%, white), var(--color-muted-foreground) 55%, color-mix(in oklab, var(--color-muted-foreground) 60%, black))", boxShadow: "0 3px 6px color-mix(in oklab, var(--color-foreground) 18%, transparent)" }}>
+                  <span className="absolute left-1/2 top-1 size-1 -translate-x-1/2 rounded-full bg-foreground/35" />
+                  <span className="absolute bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-foreground/35" />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
 
-        {items.map((item, i) => {
-          const kind = item.kind ?? "tee";
-          const color = item.color ?? "var(--color-muted-foreground)";
-          const trim = item.trim ?? mix(color, -0.12);
-          const turned = active === i;
-          const mask = item.image ? `url("${item.image}")` : silhouetteMask(kind, "front");
-          const photoBox = hanger === "none" ? "inset-0" : "inset-x-0 bottom-0 top-[8%]";
-          return (
-            <button
-              key={item.id}
-              ref={(node) => { slots.current[i] = node; }}
-              type="button"
-              data-garment={i}
-              data-front={turned || undefined}
-              tabIndex={i === (active ?? focusIndex) ? 0 : -1}
-              aria-label={item.name}
-              aria-describedby={`${uid}-caption`}
-              aria-pressed={turned}
-              className="absolute left-0 cursor-pointer rounded-xl outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
-              style={{ top: railY - (HOOK_TOP / VB_H) * h, width: boxW, height: h, zIndex: turned ? 30 : 10 + i, visibility: lifted === i ? "hidden" : undefined, transform: `translate3d(${((sim.current.x[i] ?? 0) - boxW / 2).toFixed(2)}px,0,0)` }}
-              onFocus={() => { setFocusIndex(i); if (pointer.current.id < 0) { stop(); choose(i); } }}
-              onClick={(event) => { const pending = pendingOpen.current; pendingOpen.current = -1; if (event.detail === 0 || pending === i) open(i); }}
-            >
-              <span ref={(node) => { swings.current[i] = node; }} className="absolute inset-0" style={{ transformOrigin: `50% ${(HOOK_TOP / VB_H) * 100}%` }}>
-                <span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ filter: `blur(${Math.max(3, h * 0.022).toFixed(1)}px)` }}>
-                  <span ref={(node) => { shadows.current[i] = node; }} className={`absolute block bg-black opacity-[0.16] ${item.image ? photoBox : "inset-0"}`} style={{ WebkitMask: `${mask} top center / contain no-repeat`, mask: `${mask} top center / contain no-repeat` }} />
-                </span>
-                {(item.sideImage || !item.image) && (
-                  <span ref={(node) => { sides.current[i] = node; }} data-face="side" className="absolute inset-0" style={{ transform: `perspective(${PERSPECTIVE}px) rotateY(0deg)` }}>
-                    <SideHanger uid={uid} material={hanger} />
-                    {item.sideImage ? <Photo src={item.sideImage} alt="" full={hanger === "none"} /> : <SideArt uid={uid} kind={kind} color={color} trim={trim} />}
-                  </span>
-                )}
-                <span ref={(node) => { turns.current[i] = node; }} data-turn className="absolute inset-0 rounded-lg [transform-style:preserve-3d]" style={{ transform: `perspective(${PERSPECTIVE}px) rotateY(${REST}deg)`, opacity: item.image && !item.sideImage ? 1 : 0 }}>
-                  {(["front", "back"] as const).map((side) => (
-                    <span key={side} data-face={side} className="absolute inset-0 [backface-visibility:hidden]" style={{ transform: side === "back" ? "rotateY(180deg)" : undefined, ["--garment-color" as string]: color, ["--garment-under" as string]: mix(color, -0.42) }}>
-                      <Hanger uid={uid} side={side} kind={item.image ? null : kind} material={hanger} />
-                      <span ref={side === "front" ? (node) => { drapes.current[i] = node; } : undefined} data-drape className="absolute inset-0 origin-top [transform:skewX(var(--drape,0deg))]" style={side === "back" ? { transform: "skewX(calc(var(--drape, 0deg) * -1))" } : undefined}>
-                        {item.image
-                          ? <Photo src={(side === "back" ? item.backImage : undefined) ?? item.image} alt="" full={hanger === "none"} />
-                          : <Fabric uid={uid} kind={kind} side={side} color={color} trim={trim} />}
-                        <span ref={side === "front" ? (node) => { shades.current[i] = node; } : undefined} className={`pointer-events-none absolute bg-black ${item.image ? photoBox : "inset-0"}`} style={{ opacity: "var(--shade, 0.2)", WebkitMask: `${item.image ? `url("${(side === "back" ? item.backImage : undefined) ?? item.image}")` : silhouetteMask(kind, side)} top center / contain no-repeat`, mask: `${item.image ? `url("${(side === "back" ? item.backImage : undefined) ?? item.image}")` : silhouetteMask(kind, side)} top center / contain no-repeat` }} />
+            {items.map((item, i) => {
+              const kind = item.kind ?? "tee";
+              const color = item.color ?? "var(--color-muted-foreground)";
+              const trim = item.trim ?? mix(color, -0.12);
+              const turned = active === i;
+              const mask = item.image ? `url("${item.image}")` : silhouetteMask(kind, "front");
+              const photoBox = hanger === "none" ? "inset-0" : "inset-x-0 bottom-0 top-[8%]";
+              return (
+                <button
+                  key={item.id}
+                  ref={(node) => { slots.current[i] = node; }}
+                  type="button"
+                  data-garment={i}
+                  data-front={turned || undefined}
+                  tabIndex={i === (active ?? focusIndex) ? 0 : -1}
+                  aria-label={item.name}
+                  aria-describedby={`${uid}-caption`}
+                  aria-pressed={turned}
+                  className="absolute left-0 cursor-pointer rounded-xl outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
+                  style={{ top: railY - (HOOK_TOP / VB_H) * h, width: boxW, height: h, zIndex: turned ? 30 : 10 + i, visibility: lifted === i ? "hidden" : undefined, transform: `translate3d(${((sim.current.x[i] ?? 0) - boxW / 2).toFixed(2)}px,0,0)` }}
+                  onFocus={() => { setFocusIndex(i); if (pointer.current.id < 0) { stop(); choose(i); } }}
+                  onClick={(event) => { const pending = pendingOpen.current; pendingOpen.current = -1; if (event.detail === 0) open(i); else if (pending >= 0) open(pending); }}
+                >
+                  <span ref={(node) => { swings.current[i] = node; }} className="absolute inset-0" style={{ transformOrigin: `50% ${(HOOK_TOP / VB_H) * 100}%` }}>
+                    <span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ filter: `blur(${Math.max(3, h * 0.022).toFixed(1)}px)` }}>
+                      <span ref={(node) => { shadows.current[i] = node; }} className={`absolute block bg-black opacity-[0.16] ${item.image ? photoBox : "inset-0"}`} style={{ WebkitMask: `${mask} top center / contain no-repeat`, mask: `${mask} top center / contain no-repeat` }} />
+                    </span>
+                    {(item.sideImage || !item.image) && (
+                      <span ref={(node) => { sides.current[i] = node; }} data-face="side" className="absolute inset-0" style={{ transform: `perspective(${PERSPECTIVE}px) rotateY(0deg)` }}>
+                        <SideHanger uid={uid} material={hanger} />
+                        {item.sideImage ? <Photo src={item.sideImage} alt="" full={hanger === "none"} /> : <SideArt uid={uid} kind={kind} color={color} trim={trim} />}
                       </span>
+                    )}
+                    <span ref={(node) => { turns.current[i] = node; }} data-turn className="absolute inset-0 rounded-lg [transform-style:preserve-3d]" style={{ transform: `perspective(${PERSPECTIVE}px) rotateY(${REST}deg)`, opacity: item.image && !item.sideImage ? 1 : 0 }}>
+                      {(["front", "back"] as const).map((side) => (
+                        <span key={side} data-face={side} className="absolute inset-0 [backface-visibility:hidden]" style={{ transform: side === "back" ? "rotateY(180deg)" : undefined, ["--garment-color" as string]: color, ["--garment-under" as string]: mix(color, -0.42) }}>
+                          <Hanger uid={uid} side={side} kind={item.image ? null : kind} material={hanger} />
+                          <span ref={side === "front" ? (node) => { drapes.current[i] = node; } : undefined} data-drape className="absolute inset-0 origin-top [transform:skewX(var(--drape,0deg))]" style={side === "back" ? { transform: "skewX(calc(var(--drape, 0deg) * -1))" } : undefined}>
+                            {item.image
+                              ? <Photo src={(side === "back" ? item.backImage : undefined) ?? item.image} alt="" full={hanger === "none"} />
+                              : <Fabric uid={uid} kind={kind} side={side} color={color} trim={trim} />}
+                            <span ref={side === "front" ? (node) => { shades.current[i] = node; } : undefined} className={`pointer-events-none absolute bg-black ${item.image ? photoBox : "inset-0"}`} style={{ opacity: "var(--shade, 0.2)", WebkitMask: `${item.image ? `url("${(side === "back" ? item.backImage : undefined) ?? item.image}")` : silhouetteMask(kind, side)} top center / contain no-repeat`, mask: `${item.image ? `url("${(side === "back" ? item.backImage : undefined) ?? item.image}")` : silhouetteMask(kind, side)} top center / contain no-repeat` }} />
+                          </span>
+                        </span>
+                      ))}
                     </span>
-                  ))}
-                </span>
-                {item.tag && (
-                  <span ref={(node) => { tags.current[i] = node; }} aria-hidden="true" className="pointer-events-none absolute left-1/2 origin-top" style={{ top: (32 / VB_H) * h, transform: "rotate(-12deg)" }}>
-                    <span className="block h-[14px] w-px translate-x-[3px] bg-foreground/35" />
-                    <span className="block -translate-x-1/2 translate-x-[3px] whitespace-nowrap rounded-[3px] border border-foreground/10 bg-card px-1.5 pb-1 pt-2 text-[9px] font-semibold leading-none tracking-wide text-card-foreground shadow-[0_2px_6px_color-mix(in_oklab,var(--color-foreground)_18%,transparent)]">
-                      <span className="absolute left-1/2 top-[3px] size-[3px] -translate-x-1/2 rounded-full bg-foreground/30" />
-                      {item.tag}
-                    </span>
+                    {item.tag && (
+                      <span ref={(node) => { tags.current[i] = node; }} aria-hidden="true" className="pointer-events-none absolute left-1/2 origin-top" style={{ top: (32 / VB_H) * h, transform: "rotate(-12deg)" }}>
+                        <span className="block h-[14px] w-px translate-x-[3px] bg-foreground/35" />
+                        <span className="block -translate-x-1/2 translate-x-[3px] whitespace-nowrap rounded-[3px] border border-foreground/10 bg-card px-1.5 pb-1 pt-2 text-[9px] font-semibold leading-none tracking-wide text-card-foreground shadow-[0_2px_6px_color-mix(in_oklab,var(--color-foreground)_18%,transparent)]">
+                          <span className="absolute left-1/2 top-[3px] size-[3px] -translate-x-1/2 rounded-full bg-foreground/30" />
+                          {item.tag}
+                        </span>
+                      </span>
+                    )}
                   </span>
-                )}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+                </button>
+              );
+            })}
+          </div>
 
-      {size.carousel && count > 1 && (
-        <div className="relative z-10 mt-1 flex justify-center gap-1.5" role="group" aria-label={labels.show}>
-          {items.map((item, i) => (
-            <button key={item.id} type="button" aria-label={`${labels.show} ${item.name}`} aria-current={carouselIndex === i} onClick={() => { stop(); choose(i); }} className={`h-1.5 cursor-pointer rounded-full outline-none transition-[width,background-color] duration-300 focus-visible:ring-2 focus-visible:ring-ring ${carouselIndex === i ? "w-6 bg-foreground" : "w-1.5 bg-foreground/25 hover:bg-foreground/45"}`} />
-          ))}
+          {size.carousel && count > 1 && (
+            <div className="relative z-10 mt-1 flex justify-center gap-1.5" role="group" aria-label={labels.show}>
+              {items.map((item, i) => (
+                <button key={item.id} type="button" aria-label={`${labels.show} ${item.name}`} aria-current={carouselIndex === i} onClick={() => { stop(); choose(i); }} className={`h-1.5 cursor-pointer rounded-full outline-none transition-[width,background-color] duration-300 focus-visible:ring-2 focus-visible:ring-ring ${carouselIndex === i ? "w-6 bg-foreground" : "w-1.5 bg-foreground/25 hover:bg-foreground/45"}`} />
+              ))}
+            </div>
+          )}
+
+          <div className="relative z-10 flex flex-col items-center gap-4 px-6 pb-4 pt-5 text-center">
+            <div id={`${uid}-caption`} aria-live="polite" className="min-h-[3.5rem]">
+              <p key={current?.id ?? "caption"} className="animate-in fade-in text-[15px] font-medium tracking-[-0.01em] text-foreground [animation-duration:300ms] motion-reduce:animate-none">
+                {current ? `${current.name}${current.tag ? ` · ${current.tag}` : ""}` : caption}
+              </p>
+              {current?.description && <p key={`${current.id}-d`} className="mx-auto mt-1 max-w-[48ch] text-[13.5px] leading-relaxed text-muted-foreground">{current.description}</p>}
+            </div>
+            {action}
+          </div>
         </div>
-      )}
 
-      <div className="relative z-10 flex flex-col items-center gap-4 px-6 pb-4 pt-5 text-center">
-        <div id={`${uid}-caption`} aria-live="polite" className="min-h-[3.5rem]">
-          <p key={current?.id ?? "caption"} className="animate-in fade-in text-[15px] font-medium tracking-[-0.01em] text-foreground [animation-duration:300ms] motion-reduce:animate-none">
-            {current ? `${current.name}${current.tag ? ` · ${current.tag}` : ""}` : caption}
-          </p>
-          {current?.description && <p key={`${current.id}-d`} className="mx-auto mt-1 max-w-[48ch] text-[13.5px] leading-relaxed text-muted-foreground">{current.description}</p>}
-        </div>
-        {action}
+        {openIndex !== null && items[openIndex] && (
+          <div className="col-start-1 row-start-1 z-40 w-full">
+            <Detail
+              uid={uid}
+              item={items[openIndex]}
+              index={openIndex}
+              total={count}
+              hanger={hanger}
+              labels={labels}
+              reduced={reduced}
+              saved={isSaved ? isSaved(items[openIndex]) : false}
+              onAddToBag={onAddToBag ? () => onAddToBag(items[openIndex]!) : undefined}
+              onToggleSave={onToggleSave ? () => onToggleSave(items[openIndex]!) : undefined}
+              onNavigate={
+                count > 1
+                  ? (nextIndex) => {
+                      const wrapped = ((nextIndex % count) + count) % count;
+                      choose(wrapped);
+                      setOpenIndex(wrapped);
+                      setLifted(wrapped);
+                      onOpenChange?.(wrapped);
+                    }
+                  : undefined
+              }
+              source={() => turns.current[openIndex]?.getBoundingClientRect() ?? null}
+              onLift={(lift) => setLifted(lift ? openIndex : null)}
+              onClose={() => { const index = openIndex; returnFocus.current = index; close(); impulse(index, (index % 2 ? 1 : -1) * 44); }}
+            />
+          </div>
+        )}
       </div>
-
-      {openIndex !== null && items[openIndex] && (
-        <Detail
-          uid={uid}
-          item={items[openIndex]}
-          index={openIndex}
-          total={count}
-          hanger={hanger}
-          labels={labels}
-          reduced={reduced}
-          saved={isSaved ? isSaved(items[openIndex]) : false}
-          onAddToBag={onAddToBag ? () => onAddToBag(items[openIndex]!) : undefined}
-          onToggleSave={onToggleSave ? () => onToggleSave(items[openIndex]!) : undefined}
-          source={() => turns.current[openIndex]?.getBoundingClientRect() ?? null}
-          onLift={(lift) => setLifted(lift ? openIndex : null)}
-          onClose={() => { const index = openIndex; returnFocus.current = index; close(); impulse(index, (index % 2 ? 1 : -1) * 44); }}
-        />
-      )}
     </section>
   );
 }
 
-function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAddToBag, onToggleSave, source, onLift, onClose }: {
+function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAddToBag, onToggleSave, onNavigate, source, onLift, onClose }: {
   uid: string;
   item: RailGarment;
   index: number;
@@ -1086,14 +1118,18 @@ function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAdd
   saved?: boolean;
   onAddToBag?: () => void;
   onToggleSave?: () => void;
+  onNavigate?: (nextIndex: number) => void;
   source: () => DOMRect | null;
   onLift: (lifted: boolean) => void;
   onClose: () => void;
 }) {
-  const dialogRef = React.useRef(null as HTMLDivElement | null);
+  const panelRef = React.useRef(null as HTMLDivElement | null);
   const figureRef = React.useRef(null as HTMLDivElement | null);
   const spinRef = React.useRef(null as HTMLDivElement | null);
   const closeRef = React.useRef(null as HTMLButtonElement | null);
+  const latest = React.useRef({ source, onLift, onClose });
+  latest.current = { source, onLift, onClose };
+  const prevIdRef = React.useRef(item.id);
   const [side, setSide] = React.useState("front" as "front" | "back");
   const [shown, setShown] = React.useState(false);
   const [added, setAdded] = React.useState(false);
@@ -1132,84 +1168,115 @@ function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAdd
 
   React.useLayoutEffect(() => {
     const figure = figureRef.current;
-    const from = source();
+    const panel = panelRef.current;
+    const from = latest.current.source();
     closeRef.current?.focus({ preventScroll: true });
-    const html = document.documentElement;
-    const wasLenisStopped = html.classList.contains("lenis-stopped");
-    const overflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    html.classList.add("lenis-stopped");
     let animation = null as Animation | null;
     if (figure && from && !reduced && from.width > 0) {
       const to = figure.getBoundingClientRect();
+      const stageTop = panel ? panel.getBoundingClientRect().top : to.top - 80;
       const scale = from.height / to.height;
       const dx = from.left + from.width / 2 - (to.left + to.width / 2);
       const dy = from.top - to.top;
-      const lift = Math.min(90, Math.abs(dy) * 0.25 + 30);
-      onLift(true);
+      const maxSafeLift = Math.max(12, to.top - stageTop + dy * 0.4 - 6);
+      const lift = Math.min(maxSafeLift, 90, Math.abs(dy) * 0.25 + 30);
+      latest.current.onLift(true);
       animation = figure.animate([
         { transform: `translate(${dx}px, ${dy}px) scale(${scale})` },
-        { transform: `translate(${dx * 0.4}px, ${dy * 0.4 - lift}px) scale(${(scale + 1) / 2 * 1.03}) rotate(${dx > 0 ? -2.5 : 2.5}deg)`, offset: 0.5 },
+        { transform: `translate(${dx * 0.4}px, ${dy * 0.4 - lift}px) scale(${((scale + 1) / 2) * 1.03}) rotate(${dx > 0 ? -2.5 : 2.5}deg)`, offset: 0.5 },
         { transform: "none" },
       ], { duration: 680, easing: "cubic-bezier(.22,.85,.3,1)" });
+    } else {
+      latest.current.onLift(true);
     }
     const raf = requestAnimationFrame(() => setShown(true));
     return () => {
       cancelAnimationFrame(raf);
       animation?.cancel();
-      document.body.style.overflow = overflow;
-      if (!wasLenisStopped) html.classList.remove("lenis-stopped");
       cancelAnimationFrame(angle.current.raf);
-      onLift(false);
+      latest.current.onLift(false);
     };
-  }, [source, reduced, onLift]);
+  }, [reduced]);
+
+  React.useEffect(() => {
+    if (prevIdRef.current === item.id) return;
+    prevIdRef.current = item.id;
+    setAdded(false);
+    turnTo("front");
+    if (!reduced && figureRef.current) {
+      figureRef.current.animate(
+        [
+          { opacity: 0.65, transform: "translateY(8px) scale(0.975)" },
+          { opacity: 1, transform: "none" },
+        ],
+        { duration: 280, easing: "cubic-bezier(.22,1,.36,1)" },
+      );
+    }
+  }, [item.id, reduced, turnTo]);
 
   const dismiss = React.useCallback(() => {
     if (closing.current) return;
     closing.current = true;
     setShown(false);
     const figure = figureRef.current;
-    const to = source();
-    if (!figure || !to || reduced || to.width === 0) { onClose(); return; }
+    const panel = panelRef.current;
+    const to = latest.current.source();
+    if (!figure || !to || reduced || to.width === 0) {
+      latest.current.onClose();
+      return;
+    }
     const from = figure.getBoundingClientRect();
+    const stageTop = panel ? panel.getBoundingClientRect().top : from.top - 80;
     const scale = to.height / from.height;
     const dx = to.left + to.width / 2 - (from.left + from.width / 2);
     const dy = to.top - from.top;
+    const lift = Math.min(30, Math.max(8, from.top - stageTop + dy * 0.6 - 6));
     const animation = figure.animate([
-      { transform: spinRef.current ? "none" : "none" },
-      { transform: `translate(${dx * 0.6}px, ${dy * 0.6 - 30}px) scale(${(scale + 1) / 2})`, offset: 0.55 },
+      { transform: "none" },
+      { transform: `translate(${dx * 0.6}px, ${dy * 0.6 - lift}px) scale(${(scale + 1) / 2})`, offset: 0.55 },
       { transform: `translate(${dx}px, ${dy}px) scale(${scale})` },
     ], { duration: 560, easing: "cubic-bezier(.45,0,.55,1)", fill: "forwards" });
-    animation.onfinish = () => onClose();
-  }, [source, reduced, onClose]);
+    animation.onfinish = () => latest.current.onClose();
+  }, [reduced]);
 
   React.useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      const dialog = dialogRef.current;
-      if (!dialog || dialog.contains(event.target as Node)) return;
-      if (event.key === "Escape") { event.preventDefault(); dismiss(); }
-      else if (event.key === "ArrowLeft" || event.key === "ArrowRight") turnTo(side === "front" ? "back" : "front");
-      else if (event.key === "Tab") { const first = dialog.querySelector("button"); if (first) { event.preventDefault(); first.focus(); } }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        dismiss();
+      }
     };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [dismiss, turnTo, side]);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [dismiss]);
 
   const onKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "Escape") { event.preventDefault(); dismiss(); return; }
-    if (event.key === "ArrowLeft" || event.key === "ArrowRight") { turnTo(side === "front" ? "back" : "front"); return; }
-    if (event.key !== "Tab") return;
-    const controls = [...(dialogRef.current?.querySelectorAll("button") ?? [])].filter((node) => !node.disabled);
-    const first = controls[0];
-    const last = controls.at(-1);
-    if (!first || !last) return;
-    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      dismiss();
+      return;
+    }
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      event.preventDefault();
+      turnTo(side === "front" ? "back" : "front");
+    }
   };
 
   const stage = (
-    <div ref={figureRef} className="relative mx-auto aspect-[200/310] h-[min(64vh,560px)] max-h-full origin-top">
-      <div aria-hidden="true" className="absolute left-1/2 top-[-40vh] h-[40vh] w-[3px] -translate-x-1/2 rounded-full" style={{ background: "linear-gradient(to right, color-mix(in oklab, var(--color-muted-foreground) 50%, white), var(--color-muted-foreground), color-mix(in oklab, var(--color-muted-foreground) 50%, black))", top: `calc(-40vh + ${(HOOK_TOP / VB_H) * 100}%)` }} />
+    <div ref={figureRef} className="relative z-10 mx-auto aspect-[200/310] h-[360px] max-h-full origin-top sm:h-[420px] lg:h-[450px]">
+      <div
+        aria-hidden="true"
+        className={cn(
+          "pointer-events-none absolute left-1/2 h-[220px] w-[3px] -translate-x-1/2 rounded-full transition-opacity duration-300 motion-reduce:transition-none",
+          shown ? "opacity-100 delay-100" : "opacity-0",
+        )}
+        style={{
+          background: "linear-gradient(to right, color-mix(in oklab, var(--color-muted-foreground) 50%, white), var(--color-muted-foreground), color-mix(in oklab, var(--color-muted-foreground) 50%, black))",
+          top: `calc(-220px + ${(HOOK_TOP / VB_H) * 100}%)`,
+          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 26px)",
+          maskImage: "linear-gradient(to bottom, transparent 0%, black 26px)",
+        }}
+      />
       <div
         className="absolute inset-0 cursor-grab touch-pan-y active:cursor-grabbing"
         style={{ perspective: "1400px" }}
@@ -1232,38 +1299,130 @@ function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAdd
     </div>
   );
 
-  return createPortal(
-    <div ref={dialogRef} data-slot="clothing-rail-detail" role="dialog" aria-modal="true" aria-labelledby={titleId} className="fixed inset-0 z-[1100] flex items-center justify-center overflow-y-auto p-6 font-sans text-foreground" onKeyDown={onKeyDown}>
-      <div aria-hidden="true" className={`absolute inset-0 bg-background/92 backdrop-blur-2xl transition-opacity duration-300 motion-reduce:transition-none ${shown ? "opacity-100" : "opacity-0"}`} onClick={dismiss} />
-      <button ref={closeRef} type="button" onClick={dismiss} className={`absolute right-6 top-6 z-10 inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/85 px-4 py-2 text-xs font-medium tracking-wide text-foreground shadow-sm backdrop-blur-md outline-none transition-[opacity,transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-card focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none ${shown ? "opacity-100" : "opacity-0"}`}>
-        {labels.close}
-        <X className="size-3.5" strokeWidth={1.7} />
+  return (
+    <div
+      ref={panelRef}
+      data-slot="clothing-rail-detail"
+      role="region"
+      aria-labelledby={titleId}
+      className="relative w-full px-4 pb-4 pt-16 font-sans text-foreground sm:px-6 md:pt-20"
+      onKeyDown={onKeyDown}
+    >
+      {/* Click empty showroom space to glide garment back onto rail */}
+      <div aria-hidden="true" className="absolute inset-0" onClick={dismiss} />
+
+      {/* Top-Left Floating Back Pill (frameless, matching original Detail pill aesthetic) */}
+      <button
+        ref={closeRef}
+        type="button"
+        onClick={dismiss}
+        className={cn(
+          "group absolute left-3 top-3 z-20 inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card/85 px-4 py-2 text-xs font-medium tracking-wide text-foreground shadow-sm backdrop-blur-md outline-none transition-[opacity,transform,background-color] duration-300 hover:-translate-y-0.5 hover:bg-card focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none sm:left-6",
+          shown ? "opacity-100" : "opacity-0",
+        )}
+      >
+        <ArrowLeft className="size-3.5 transition-transform duration-200 group-hover:-translate-x-0.5" strokeWidth={1.7} />
+        <span>{labels.backToRail ?? "Back to Rail"}</span>
       </button>
-      <div className="relative grid w-full max-w-5xl items-center gap-10 pt-10 md:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
-        <div className="flex flex-col items-center gap-3">
+
+      {/* Top-Right Floating Piece Stepper */}
+      {onNavigate && (
+        <div
+          className={cn(
+            "absolute right-3 top-3 z-20 inline-flex items-center gap-1 rounded-full border border-border bg-card/85 p-1 text-xs text-foreground shadow-sm backdrop-blur-md transition-opacity duration-300 motion-reduce:transition-none sm:right-6",
+            shown ? "opacity-100" : "opacity-0",
+          )}
+        >
+          <button
+            type="button"
+            onClick={() => onNavigate(index - 1)}
+            aria-label="Previous garment on rail"
+            className="grid size-6 cursor-pointer place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/10 focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <ChevronLeft className="size-3.5" strokeWidth={1.75} />
+          </button>
+          <span className="px-2 font-mono text-[11px] tracking-[0.16em] text-muted-foreground">
+            {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+          </span>
+          <button
+            type="button"
+            onClick={() => onNavigate(index + 1)}
+            aria-label="Next garment on rail"
+            className="grid size-6 cursor-pointer place-items-center rounded-full text-foreground transition-colors hover:bg-foreground/10 focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <ChevronRight className="size-3.5" strokeWidth={1.75} />
+          </button>
+        </div>
+      )}
+
+      {/* Frameless Open-Air Two-Column Showcase (identical to original Detail, directly inside Section 5) */}
+      <div className=" pointer-events-none relative z-10 mx-auto grid w-full max-w-5xl items-center gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
+        <div className="pointer-events-auto flex flex-col items-center gap-3">
           {stage}
-          <span className={`inline-flex items-center gap-1.5 rounded-full border border-border bg-card/75 px-3.5 py-1 text-[11.5px] text-muted-foreground backdrop-blur-sm transition-opacity duration-500 ${shown ? "opacity-100" : "opacity-0"}`}>
+          <span
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full border border-border bg-card/75 px-3.5 py-1 text-[11.5px] text-muted-foreground backdrop-blur-sm transition-opacity duration-500 motion-reduce:transition-none",
+              shown ? "opacity-100" : "opacity-0",
+            )}
+          >
             <Rotate3d className="size-3.5 text-foreground" />
             Drag garment to turn 180°
           </span>
         </div>
-        <div className={`flex flex-col gap-4 text-center transition-[opacity,transform] delay-150 duration-500 motion-reduce:transition-none md:text-left ${shown ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"}`}>
+
+        <div
+          className={cn(
+            "pointer-events-auto flex flex-col gap-4 text-center transition-[opacity,transform] delay-150 duration-500 motion-reduce:transition-none md:text-left",
+            shown ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0",
+          )}
+        >
           <p className="font-mono text-[11px] tracking-[0.2em] text-muted-foreground">
             {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
             {item.tag ? ` · ${item.tag}` : ""}
           </p>
-          <h3 id={titleId} className="text-2xl font-medium tracking-tight sm:text-3xl">{item.name}</h3>
-          {item.description && <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>}
+          <h3 id={titleId} className="text-2xl font-medium tracking-tight sm:text-3xl">
+            {item.name}
+          </h3>
+          {item.description && (
+            <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+          )}
           {item.details && item.details.length > 0 && (
             <ul className="flex flex-wrap justify-center gap-2 md:justify-start">
-              {item.details.map((detail) => <li key={detail} className="rounded-full border border-border bg-card/75 px-3 py-1 text-xs text-muted-foreground">{detail}</li>)}
+              {item.details.map((detail) => (
+                <li
+                  key={detail}
+                  className="rounded-full border border-border bg-card/75 px-3 py-1 text-xs text-muted-foreground"
+                >
+                  {detail}
+                </li>
+              ))}
             </ul>
           )}
-          <div role="group" aria-label={`${labels.front} / ${labels.back}`} className="mt-2 inline-flex justify-center gap-6 md:justify-start">
+
+          <div
+            role="group"
+            aria-label={`${labels.front} / ${labels.back}`}
+            className="mt-2 inline-flex justify-center gap-6 md:justify-start"
+          >
             {(["front", "back"] as const).map((face) => (
-              <button key={face} type="button" aria-pressed={side === face} onClick={() => turnTo(face)} className={`relative cursor-pointer pb-1.5 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring ${side === face ? "text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+              <button
+                key={face}
+                type="button"
+                aria-pressed={side === face}
+                onClick={() => turnTo(face)}
+                className={cn(
+                  "relative cursor-pointer pb-1.5 text-sm font-medium outline-none transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+                  side === face ? "text-foreground" : "text-muted-foreground hover:text-foreground",
+                )}
+              >
                 {face === "front" ? labels.front : labels.back}
-                <span aria-hidden="true" className={`absolute inset-x-0 bottom-0 h-px origin-left bg-foreground transition-transform duration-300 motion-reduce:transition-none ${side === face ? "scale-x-100" : "scale-x-0"}`} />
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "absolute inset-x-0 bottom-0 h-px origin-left bg-foreground transition-transform duration-300 motion-reduce:transition-none",
+                    side === face ? "scale-x-100" : "scale-x-0",
+                  )}
+                />
               </button>
             ))}
           </div>
@@ -1290,11 +1449,12 @@ function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAdd
                   onClick={onToggleSave}
                   aria-label={saved ? "Remove from Private Trunk Show" : "Save to Private Trunk Show"}
                   title={saved ? "Saved in Trunk Show" : "Save to Private Trunk Show"}
-                  className={`grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border transition-all duration-200 ${
+                  className={cn(
+                    "grid size-11 shrink-0 cursor-pointer place-items-center rounded-full border transition-all duration-200",
                     saved
                       ? "border-[#2a1a12] bg-[#2a1a12] text-[#fbf7f1]"
-                      : "border-border bg-card text-foreground hover:border-[#2a1a12]"
-                  }`}
+                      : "border-border bg-card text-foreground hover:border-[#2a1a12]",
+                  )}
                 >
                   <Heart className="size-[17px]" fill={saved ? "currentColor" : "none"} strokeWidth={1.7} />
                 </button>
@@ -1303,8 +1463,7 @@ function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAdd
           )}
         </div>
       </div>
-    </div>,
-    document.body,
+    </div>
   );
 }
 
