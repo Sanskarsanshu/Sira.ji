@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import './TryTheLookSection.css';
 import { useAtelier } from '../context/AtelierContext';
 import type { CapsulePiece } from '../types';
@@ -193,85 +194,85 @@ const LOOKS: LookDef[] = [
     index: 0,
     numStr: '01',
     name: 'The City Edit',
-    desc: 'A charcoal knit and easy relaxed denim.',
+    desc: 'A charcoal knit sweatshirt, layered tee, and easy relaxed denim.',
     src640: 'https://reel-ref-try-the-look.vercel.app/assets/model-1-640.webp',
     srcset1080: 'https://reel-ref-try-the-look.vercel.app/assets/original-look-1.webp',
     pins: [
-      { num: 1, productKey: 'tatum-5-orbit-copy', left: 47, top: 27 },
-      { num: 2, productKey: 'tshirt', left: 48, top: 58 },
-      { num: 3, productKey: 'sweatshirt', left: 45, top: 96 },
+      { num: 1, productKey: 'sweatshirt', left: 53, top: 28 },
+      { num: 2, productKey: 'tshirt', left: 44, top: 46 },
+      { num: 3, productKey: 'tatum-5-orbit-copy', left: 53, top: 88 },
     ],
-    products: ['tatum-5-orbit-copy', 'tshirt', 'sweatshirt'],
+    products: ['sweatshirt', 'tshirt', 'tatum-5-orbit-copy'],
   },
   {
     index: 1,
     numStr: '02',
     name: 'Gallery Opening',
-    desc: 'A clean white oversized tee and washed vintage denim.',
+    desc: 'A clean black flight fleece hoodie, white oversized tee, and vintage denim.',
     src640: 'https://reel-ref-try-the-look.vercel.app/assets/model-5-640.webp',
     srcset1080: 'https://reel-ref-try-the-look.vercel.app/assets/original-look-5.webp',
     pins: [
-      { num: 1, productKey: 'tatum-5-orbit', left: 50, top: 28 },
-      { num: 2, productKey: 'hoodie-black', left: 48, top: 58 },
-      { num: 3, productKey: 'tshirt', left: 45, top: 88 },
+      { num: 1, productKey: 'hoodie-black', left: 53, top: 28 },
+      { num: 2, productKey: 'tshirt', left: 44, top: 46 },
+      { num: 3, productKey: 'tatum-5-orbit', left: 53, top: 88 },
     ],
-    products: ['tatum-5-orbit', 'hoodie-black', 'tshirt'],
+    products: ['hoodie-black', 'tshirt', 'tatum-5-orbit'],
   },
   {
     index: 2,
     numStr: '03',
-    name: 'Gallery Opening',
-    desc: 'Olive-green chunky knitwear with grounded earth tones.',
+    name: 'Downtown Layer',
+    desc: 'Olive-green chunky knitwear with grounded earth tones and Orbit sneakers.',
     src640: 'https://reel-ref-try-the-look.vercel.app/assets/model-4-640.webp',
     srcset1080: 'https://reel-ref-try-the-look.vercel.app/assets/original-look-4.webp',
     pins: [
-      { num: 1, productKey: 'sweatshirt-plus', left: 50, top: 28 },
-      { num: 2, productKey: 'tatum-5-orbit', left: 48, top: 58 },
-      { num: 3, productKey: 'tshirt', left: 45, top: 88 },
+      { num: 1, productKey: 'sweatshirt-plus', left: 53, top: 28 },
+      { num: 2, productKey: 'tshirt', left: 44, top: 46 },
+      { num: 3, productKey: 'tatum-5-orbit', left: 53, top: 88 },
     ],
-    products: ['sweatshirt-plus', 'tatum-5-orbit', 'tshirt'],
+    products: ['sweatshirt-plus', 'tshirt', 'tatum-5-orbit'],
   },
   {
     index: 3,
     numStr: '04',
     name: 'Studio Day',
-    desc: 'Black, white and laid-back wide denim drape.',
+    desc: 'Black, white and laid-back wide denim drape with Luka 5 silhouette.',
     src640: 'https://reel-ref-try-the-look.vercel.app/assets/model-6-640.webp',
     srcset1080: 'https://reel-ref-try-the-look.vercel.app/assets/original-look-6.webp',
     pins: [
-      { num: 1, productKey: 'hoodie-black', left: 50, top: 28 },
-      { num: 2, productKey: 'tatum-5-orbit-copy', left: 48, top: 58 },
-      { num: 3, productKey: 'tshirt', left: 45, top: 88 },
+      { num: 1, productKey: 'hoodie-black', left: 53, top: 28 },
+      { num: 2, productKey: 'tshirt', left: 44, top: 46 },
+      { num: 3, productKey: 'tatum-5-orbit-copy', left: 53, top: 88 },
     ],
-    products: ['hoodie-black', 'tatum-5-orbit-copy', 'tshirt'],
+    products: ['hoodie-black', 'tshirt', 'tatum-5-orbit-copy'],
   },
   {
     index: 4,
     numStr: '05',
-    name: 'Studio Day',
-    desc: 'Burgundy knit layers over structured white cotton.',
+    name: 'Cyber Monochrome',
+    desc: 'Burgundy knit fleece over structured white cotton with Orbit low-tops.',
     src640: 'https://reel-ref-try-the-look.vercel.app/assets/model-3-640.webp',
     srcset1080: 'https://reel-ref-try-the-look.vercel.app/assets/original-look-3.webp',
     pins: [
-      { num: 1, productKey: 'sweatshirt', left: 50, top: 28 },
-      { num: 2, productKey: 'tatum-5-orbit', left: 48, top: 58 },
-      { num: 3, productKey: 'tshirt', left: 45, top: 88 },
+      { num: 1, productKey: 'sweatshirt', left: 53, top: 28 },
+      { num: 2, productKey: 'tshirt', left: 44, top: 46 },
+      { num: 3, productKey: 'tatum-5-orbit', left: 53, top: 88 },
     ],
-    products: ['sweatshirt', 'tatum-5-orbit', 'tshirt'],
+    products: ['sweatshirt', 'tshirt', 'tatum-5-orbit'],
   },
   {
     index: 5,
     numStr: '06',
-    name: 'Studio Day',
-    desc: 'Light-grey crew sweatshirt with relaxed Italian-cut denim.',
+    name: 'Minimalist Stride',
+    desc: 'Light-grey crew sweatshirt with relaxed Italian-cut denim and retro kicks.',
     src640: 'https://reel-ref-try-the-look.vercel.app/assets/model-2-640.webp',
     srcset1080: 'https://reel-ref-try-the-look.vercel.app/assets/original-look-2.webp',
     pins: [
-      { num: 1, productKey: 'hoodie', left: 50, top: 28 },
-      { num: 2, productKey: 'air-jordan-12-retro-copy', left: 48, top: 58 },
-      { num: 3, productKey: 'tshirt', left: 45, top: 88 },
+      { num: 1, productKey: 'hoodie', left: 53, top: 28 },
+      { num: 2, productKey: 'tshirt', left: 44, top: 46 },
+      { num: 3, productKey: 'air-jordan-12-retro-copy', left: 53, top: 88 },
     ],
-    products: ['hoodie', 'air-jordan-12-retro-copy', 'tshirt'],
+    products: ['hoodie', 'tshirt', 'air-jordan-12-retro-copy'],
   },
 ];
 
@@ -308,6 +309,8 @@ export const TryTheLookSection: React.FC = () => {
   const [pState, setPState] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [hotPin, setHotPin] = useState<number | null>(null);
+  const [inspectPinNum, setInspectPinNum] = useState(1);
+  const lightboxCloseRef = useRef<HTMLButtonElement>(null);
 
   // Styling bag state
   const [bagItems, setBagItems] = useState<BagItem[]>(() => {
@@ -357,6 +360,64 @@ export const TryTheLookSection: React.FC = () => {
   const currentProducts = currentLook.products.map((k) => PRODUCTS[k]).filter(Boolean);
   const bundleOriginalPrice = currentProducts.reduce((sum, p) => sum + p.price, 0);
   const bundleDiscountedPrice = bundleOriginalPrice * 0.9;
+
+  const activePinDef = currentLook.pins.find((p) => p.num === inspectPinNum) || currentLook.pins[0];
+  const activePinItemIdx = activePinDef.num - 1;
+  const activeInspectProduct = PRODUCTS[activePinDef.productKey];
+  const inspectRowKey = `${activeIdx}-${activePinItemIdx}`;
+  const currentInspectSize = selectedSizes[inspectRowKey] || activeInspectProduct?.sizes[0] || 'M';
+  const isInspectAdded = !!addedItems[inspectRowKey];
+  const isInspectFaved = activeInspectProduct ? isPieceCurated(activeInspectProduct.id) : false;
+
+  // Jump to specific look (instant=true snaps immediately inside Inspect Pins so intermediate outfits never flash)
+  const jumpToLook = useCallback((idx: number, instant = false) => {
+    const currentTargetIdx = wrap(Math.round(targetRef.current), N);
+    let d = (idx - currentTargetIdx) % N;
+    if (d > 3) d -= N;
+    else if (d < -3) d += N;
+    const nextTarget = Math.round(targetRef.current) + d;
+    targetRef.current = nextTarget;
+    if (instant) {
+      pRef.current = nextTarget;
+      dirtyRef.current = true;
+      setPState(nextTarget);
+    }
+  }, []);
+
+  // Inspect Pins modal: keyboard controls, page scroll lock and focus management
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setIsLightboxOpen(false);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        jumpToLook(wrap(activeIdx + 1, N), true);
+        setInspectPinNum(1);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        jumpToLook(wrap(activeIdx - 1, N), true);
+        setInspectPinNum(1);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isLightboxOpen, activeIdx, jumpToLook]);
+
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+    const html = document.documentElement;
+    const prevOverflow = html.style.overflow;
+    html.style.overflow = 'hidden';
+    const lastFocused = document.activeElement as HTMLElement | null;
+    const t = window.setTimeout(() => lightboxCloseRef.current?.focus(), 50);
+    return () => {
+      window.clearTimeout(t);
+      html.style.overflow = prevOverflow;
+      lastFocused?.focus?.({ preventScroll: true });
+    };
+  }, [isLightboxOpen]);
 
   // Persist bag items
   useEffect(() => {
@@ -526,10 +587,8 @@ export const TryTheLookSection: React.FC = () => {
         const clickedIdx = +hit.dataset.i;
         let d = wrap(clickedIdx - targetRef.current, N);
         d = Math.round(d);
-        if (d === 0) {
-          // Click on front model opens lightbox popup with pins!
-          setIsLightboxOpen(true);
-        } else if (d > 0 && d < N) {
+        // Clicking the front model does nothing — the pin inspector opens ONLY via the "Inspect Pins" button.
+        if (d > 0 && d < N) {
           targetRef.current = Math.round(targetRef.current) + d;
         }
       }
@@ -553,6 +612,7 @@ export const TryTheLookSection: React.FC = () => {
 
   // Keyboard controls
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (isLightboxOpen) return; // the inspector modal owns the arrow keys while open
     if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
       e.preventDefault();
@@ -561,14 +621,6 @@ export const TryTheLookSection: React.FC = () => {
       e.preventDefault();
       targetRef.current = Math.round(targetRef.current) - 1;
     }
-  };
-
-  // Jump to specific look
-  const jumpToLook = (idx: number) => {
-    let d = (idx - activeIdx) % N;
-    if (d > 3) d -= 6;
-    else if (d < -3) d += 6;
-    targetRef.current = Math.round(targetRef.current) + d;
   };
 
   // Toggle favorite in Trunk Show Curation
@@ -737,7 +789,7 @@ export const TryTheLookSection: React.FC = () => {
             Urban Poise,<br />Streetwear Runway
           </h2>
           <p className="hero-sub rv" style={{ marginTop: '16px' }}>
-            Six curated streetwear looks styled head to toe. Drag to explore the perspective line, tap pins to inspect every piece.
+            Six curated streetwear looks styled head to toe. Drag to explore the perspective line, or click Inspect Pins to examine every piece.
           </p>
         </div>
 
@@ -797,7 +849,14 @@ export const TryTheLookSection: React.FC = () => {
                     <button
                       className="ttl-inspect-btn"
                       type="button"
-                      onClick={() => setIsLightboxOpen(true)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        ringRef.current?.classList.remove('show', 'drag');
+                        setPickingKey(null);
+                        setInspectPinNum(hotPin || 1);
+                        setIsLightboxOpen(true);
+                      }}
+                      title="Open full interactive pin inspector"
                     >
                       <span>Inspect Pins</span>
                       <span>↗</span>
@@ -811,20 +870,24 @@ export const TryTheLookSection: React.FC = () => {
                   </div>
 
                   <div className="ttl-pins-ribbon">
-                    <span>Active Pins:</span>
+                    <span className="ttl-ribbon-label">In This Look:</span>
                     {currentLook.pins.map((pin) => {
                       const prod = PRODUCTS[pin.productKey];
                       return (
                         <button
                           key={pin.num}
                           type="button"
-                          className="ttl-pin-chip"
-                          onClick={() => {
+                          className={`ttl-pin-chip ${hotPin === pin.num ? 'active' : ''}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setHotPin(pin.num);
+                            setInspectPinNum(pin.num);
                             setPickingKey(`${activeIdx}-${pin.num - 1}`);
                           }}
+                          onPointerEnter={() => setHotPin(pin.num)}
+                          onPointerLeave={() => setHotPin(null)}
                         >
-                          <span>{pin.num}</span>
+                          <span className="ttl-chip-num">{pin.num}</span>
                           <span>{prod?.name}</span>
                         </button>
                       );
@@ -1022,62 +1085,286 @@ export const TryTheLookSection: React.FC = () => {
               </aside>
             </main>
 
-            {/* LIGHTBOX POPUP ("View Look" with Interactive Numbered Pins) */}
-            <div className={`ttl-lightbox ${isLightboxOpen ? 'open' : ''}`}>
-              <div className="ttl-lb-header">
-                <div className="ttl-lb-title-group">
-                  <span className="ttl-lb-kicker">Look {currentLook.numStr}</span>
-                  <span className="ttl-lb-name">{currentLook.name}</span>
-                </div>
-
-                <button
-                  className="ttl-lb-close-btn"
-                  type="button"
-                  onClick={() => setIsLightboxOpen(false)}
-                  aria-label="Close lightbox"
+            {/* INSPECT PINS MODAL — opens EXCLUSIVELY from the "Inspect Pins" button.
+                Portaled to <body> inside a self-contained luxury studio dialog so
+                zero background runway outfits can ever overlap the pinned model. */}
+            {isLightboxOpen &&
+              createPortal(
+                <div
+                  className="ttl-lightbox open"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label={`Inspect Pins for Look ${currentLook.numStr}: ${currentLook.name}`}
+                  data-lenis-prevent=""
+                  onClick={(e) => {
+                    if (e.target === e.currentTarget) {
+                      setIsLightboxOpen(false);
+                    }
+                  }}
                 >
-                  <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                    <path d="M18 6L6 18M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
+                  <div className="ttl-lb-dialog" onClick={(e) => e.stopPropagation()}>
+                    {/* Top Studio Header */}
+                    <div className="ttl-lb-header">
+                      <div className="ttl-lb-title-group">
+                        <div className="ttl-brand-badge">
+                          <span className="ttl-pulse-dot" />
+                          <span>Inspect Pins</span>
+                        </div>
+                        <span className="ttl-lb-kicker">
+                          Look {currentLook.numStr} · {currentLook.name}
+                        </span>
+                      </div>
 
-              <div className="ttl-lb-stage" onClick={() => setIsLightboxOpen(false)}>
-                <div className="ttl-lb-figure-box" onClick={(e) => e.stopPropagation()}>
-                  <img
-                    src={currentLook.src640}
-                    srcSet={`${currentLook.src640} 640w, ${currentLook.srcset1080} 1080w`}
-                    alt={currentLook.name}
-                  />
+                      {/* Instant Look Switcher Pills (snaps directly with zero intermediate outfit overlap) */}
+                      <div className="ttl-lb-look-pills" role="tablist" aria-label="Select look to inspect">
+                        {LOOKS.map((lk, i) => (
+                          <button
+                            key={lk.index}
+                            type="button"
+                            role="tab"
+                            aria-selected={i === activeIdx}
+                            className={`ttl-lb-look-pill ${i === activeIdx ? 'active' : ''}`}
+                            onClick={() => {
+                              jumpToLook(i, true);
+                              setInspectPinNum(1);
+                            }}
+                            title={`Inspect Look ${lk.numStr}: ${lk.name}`}
+                          >
+                            {lk.numStr}
+                          </button>
+                        ))}
+                      </div>
 
-                  {/* Interactive Pins */}
-                  {currentLook.pins.map((pin) => {
-                    const prod = PRODUCTS[pin.productKey];
-                    return (
                       <button
-                        key={pin.num}
+                        ref={lightboxCloseRef}
+                        className="ttl-lb-close-btn"
                         type="button"
-                        className={`ttl-pin-node ${hotPin === pin.num ? 'active' : ''}`}
-                        style={{ left: `${pin.left}%`, top: `${pin.top}%` }}
-                        data-tip={prod?.name || ''}
-                        onPointerEnter={() => setHotPin(pin.num)}
-                        onPointerLeave={() => setHotPin(null)}
-                        onClick={() => {
-                          setHotPin(pin.num);
-                          setPickingKey(`${activeIdx}-${pin.num - 1}`);
-                          setIsLightboxOpen(false);
-                          showToast(`Selected piece ${pin.num}: ${prod?.name}`);
-                        }}
+                        onClick={() => setIsLightboxOpen(false)}
+                        aria-label="Close inspector"
+                        title="Close inspector (Esc)"
                       >
-                        <span className="ttl-pin-circle">{pin.num}</span>
+                        <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                          <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
                       </button>
-                    );
-                  })}
-                </div>
-              </div>
+                    </div>
 
-              <p className="ttl-lb-footer-hint">Tap a numbered dot to isolate and shop the piece</p>
-            </div>
+                    {/* Two-Column Isolated Studio Body */}
+                    <div className="ttl-lb-stage">
+                      {/* Left Column: Isolated Single-Outfit Studio Pedestal */}
+                      <div className="ttl-lb-pedestal">
+                        <div className="ttl-lb-pedestal-top">
+                          <span className="ttl-lb-hint-pill">Tap Pin 1–3 to Inspect Garment</span>
+                          <span className="ttl-lb-counter">
+                            {currentLook.numStr} / 0{N}
+                          </span>
+                        </div>
+
+                        <button
+                          type="button"
+                          className="ttl-lb-arrow prev"
+                          onClick={() => {
+                            jumpToLook(wrap(activeIdx - 1, N), true);
+                            setInspectPinNum(1);
+                          }}
+                          aria-label="Previous look"
+                          title="Previous look (←)"
+                        >
+                          ‹
+                        </button>
+
+                        <div className="ttl-lb-figure-box">
+                          <div className="ttl-lb-floor-shadow" aria-hidden="true" />
+                          <img
+                            key={currentLook.index}
+                            src={currentLook.src640}
+                            alt={`Look ${currentLook.numStr}: ${currentLook.name}`}
+                            draggable={false}
+                          />
+
+                          {/* Staggered Non-Overlapping Interactive Garment Pins */}
+                          {currentLook.pins.map((pin) => {
+                            const prod = PRODUCTS[pin.productKey];
+                            const isSelected = inspectPinNum === pin.num;
+                            const sideClass = pin.num === 2 ? 'pin-left' : 'pin-right';
+                            return (
+                              <button
+                                key={`${currentLook.index}-${pin.num}`}
+                                type="button"
+                                className={`ttl-pin-node ${sideClass} ${isSelected ? 'active' : ''}`}
+                                style={{ left: `${pin.left}%`, top: `${pin.top}%` }}
+                                onClick={() => {
+                                  setInspectPinNum(pin.num);
+                                  setHotPin(pin.num);
+                                }}
+                                onPointerEnter={() => setHotPin(pin.num)}
+                                aria-pressed={isSelected}
+                                aria-label={`Pin ${pin.num}: ${prod?.name} (${prod?.priceStr})`}
+                              >
+                                <span className="ttl-pin-radar" />
+                                <span className="ttl-pin-circle">{pin.num}</span>
+                                <span className="ttl-pin-label">
+                                  <b>0{pin.num}</b> {prod?.name}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        <button
+                          type="button"
+                          className="ttl-lb-arrow next"
+                          onClick={() => {
+                            jumpToLook(wrap(activeIdx + 1, N), true);
+                            setInspectPinNum(1);
+                          }}
+                          aria-label="Next look"
+                          title="Next look (→)"
+                        >
+                          ›
+                        </button>
+                      </div>
+
+                      {/* Right Column: Clean 3-Piece Selector + Active Garment Card */}
+                      <div className="ttl-lb-inspector-pane">
+                        {/* All 3 Outfit Pieces as Clean Non-Overlapping Mini Selector Tabs */}
+                        <div className="ttl-lb-piece-tabs" role="tablist" aria-label="Pieces in this outfit">
+                          {currentLook.pins.map((pin) => {
+                            const prod = PRODUCTS[pin.productKey];
+                            if (!prod) return null;
+                            const isSelected = inspectPinNum === pin.num;
+                            return (
+                              <button
+                                key={pin.num}
+                                type="button"
+                                role="tab"
+                                aria-selected={isSelected}
+                                className={`ttl-lb-piece-tab ${isSelected ? 'active' : ''}`}
+                                onClick={() => {
+                                  setInspectPinNum(pin.num);
+                                  setHotPin(pin.num);
+                                }}
+                              >
+                                <span className="ttl-lb-tab-num">{pin.num}</span>
+                                <img src={prod.image} alt={prod.name} />
+                                <span className="ttl-lb-tab-info">
+                                  <strong>{prod.name}</strong>
+                                  <small>{prod.priceStr}</small>
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Dedicated Active Garment Card */}
+                        {activeInspectProduct && (
+                          <div className="ttl-lb-detail-card" key={`${activeIdx}-${activePinDef.num}`}>
+                            <div className="ttl-lb-detail-head">
+                              <span className="ttl-lb-pin-badge">
+                                PIN 0{activePinDef.num} · PIECE 0{activePinDef.num} OF 03
+                              </span>
+                              <div className="ttl-lb-head-right">
+                                <span className="ttl-lb-vendor">{activeInspectProduct.vendor}</span>
+                                <button
+                                  type="button"
+                                  className="ttl-lb-fav-btn"
+                                  aria-pressed={isInspectFaved}
+                                  aria-label={`${isInspectFaved ? 'Remove' : 'Save'} ${activeInspectProduct.name}`}
+                                  onClick={(e) => handleToggleFavorite(activeInspectProduct, e)}
+                                  title={isInspectFaved ? 'Saved in Trunk Show' : 'Save to Trunk Show'}
+                                >
+                                  <svg viewBox="0 0 24 24">
+                                    <path d="M12 20S3.5 15 3.5 9A4.6 4.6 0 0 1 12 6.6 4.600 4.600 0 0 1 20.500 9C20.500 15 12 20 12 20Z" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="ttl-lb-product-shot">
+                              <img src={activeInspectProduct.image} alt={activeInspectProduct.name} />
+                            </div>
+
+                            <div className="ttl-lb-detail-meta">
+                              <h3 className="ttl-lb-product-title">{activeInspectProduct.name}</h3>
+                              <div className="ttl-lb-price-row">
+                                <span className="ttl-lb-price">{activeInspectProduct.priceStr}</span>
+                                <span className="ttl-lb-free-shipping">Complimentary Insured Shipping</span>
+                              </div>
+                            </div>
+
+                            {/* Size Selector Synced with Runway Right Panel */}
+                            <div className="ttl-lb-sizes-section">
+                              <div className="ttl-lb-size-header">
+                                <span>{activeInspectProduct.legend}</span>
+                                <span className="ttl-lb-size-chosen">
+                                  Selected: <b>{currentInspectSize}</b>
+                                </span>
+                              </div>
+                              <div className="ttl-lb-size-pills">
+                                {activeInspectProduct.sizes.map((s) => (
+                                  <button
+                                    key={s}
+                                    type="button"
+                                    className={`ttl-lb-size-pill ${currentInspectSize === s ? 'active' : ''}`}
+                                    onClick={() => {
+                                      setSelectedSizes((prev) => ({
+                                        ...prev,
+                                        [inspectRowKey]: s,
+                                      }));
+                                    }}
+                                  >
+                                    {s}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Unified Add to Bag Button (Syncs Styling Bag + Universal Header Cart) */}
+                            <button
+                              className={`ttl-lb-add-btn ${isInspectAdded ? 'added' : ''}`}
+                              type="button"
+                              onClick={() => {
+                                handleAddPiece(activeIdx, activePinItemIdx, activePinDef.productKey);
+                              }}
+                            >
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2}>
+                                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0" />
+                              </svg>
+                              <span>
+                                {isInspectAdded
+                                  ? `Added (${currentInspectSize}) · Add Another`
+                                  : `Add to Bag · ${activeInspectProduct.priceStr}`}
+                              </span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Studio Footer: Look Notes + Complete the Look Bundle */}
+                    <div className="ttl-lb-footer">
+                      <p className="ttl-lb-look-caption">
+                        <strong>Look {currentLook.numStr}:</strong> {currentLook.desc}
+                      </p>
+
+                      <div className="ttl-lb-bundle-bar">
+                        <span>Complete the Look (Save 10%):</span>
+                        <s>${bundleOriginalPrice.toFixed(2)}</s>
+                        <strong>${bundleDiscountedPrice.toFixed(2)}</strong>
+                        <button
+                          type="button"
+                          className="ttl-lb-bundle-btn"
+                          disabled={isAddingBundle}
+                          onClick={handleAddFullLook}
+                        >
+                          {isAddingBundle ? 'Adding…' : 'Add Full Look →'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>,
+                document.body
+              )}
           </div>
         </div>
       </div>

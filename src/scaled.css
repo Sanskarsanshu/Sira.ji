@@ -1913,6 +1913,8 @@ body.modal-active {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 0;
+  isolation: isolate;
 }
 
 .runway-stage .m {
@@ -1943,24 +1945,39 @@ body.modal-active {
   background: radial-gradient(closest-side, rgba(70, 85, 105, 0.24), transparent);
 }
 
-/* Glassmorphic Atelier Suite */
+/* Glassmorphic Atelier Suite (Consistent Runway Frosted Glass Language) */
 .runway-atelier-glass {
   position: absolute;
   z-index: 20;
   left: 28px;
   top: 24px;
   width: min(440px, 86%);
-  background: rgba(255, 255, 255, 0.78);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
-  backdrop-filter: blur(24px) saturate(140%);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 26px;
   padding: 18px 20px;
-  box-shadow: 0 20px 48px -12px rgba(42, 26, 18, 0.12);
+  box-shadow:
+    0 12px 40px rgba(35, 48, 65, 0.07),
+    0 2px 10px rgba(35, 48, 65, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.58),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column;
   gap: 12px;
   transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .runway-atelier-glass {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.62) 0%,
+      rgba(255, 255, 255, 0.46) 52%,
+      rgba(246, 250, 255, 0.56) 100%
+    );
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+  }
 }
 
 .runway-atelier-glass.minimized {
@@ -1968,7 +1985,7 @@ body.modal-active {
   min-width: 280px;
   padding: 12px 18px;
   border-radius: 99px;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.66);
 }
 
 .glass-header {
