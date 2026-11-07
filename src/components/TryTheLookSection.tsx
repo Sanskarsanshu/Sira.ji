@@ -933,7 +933,7 @@ export const TryTheLookSection: React.FC = () => {
                     return (
                       <article
                         key={itemIdx}
-                        className={`card runway-card ttl-runway-card ${itemIdx % 2 ? 'alt' : ''} ${isHot ? 'hot' : ''}`}
+                        className={`ttl-runway-card ${itemIdx % 2 ? 'alt' : ''} ${isHot ? 'hot' : ''}`}
                         onPointerEnter={() => setHotPin(itemIdx + 1)}
                         onPointerLeave={() => setHotPin(null)}
                       >
@@ -951,8 +951,13 @@ export const TryTheLookSection: React.FC = () => {
                           </svg>
                         </button>
 
-                        {/* Clean Product Shot — exact same presentation as female RunwayLookbook */}
-                        <span
+                        {/* Number Badge at Top Right */}
+                        <span className="ttl-card-badge" title={`Pin ${itemIdx + 1} on model`}>
+                          {itemIdx + 1}
+                        </span>
+
+                        {/* Perfectly Centered Product Shot — exact same presentation as female RunwayLookbook */}
+                        <div
                           className="shot"
                           onClick={() => {
                             setHotPin(itemIdx + 1);
@@ -963,10 +968,7 @@ export const TryTheLookSection: React.FC = () => {
                           title={`Click to select ${product.name}`}
                         >
                           <img src={product.image} alt={product.name} />
-                          <span className="ttl-card-badge" title={`Pin ${itemIdx + 1} on model`}>
-                            {itemIdx + 1}
-                          </span>
-                        </span>
+                        </div>
 
                         {/* Meta: Title, Price, and Plus + Button — exactly matching RunwayLookbook */}
                         <div className="meta">

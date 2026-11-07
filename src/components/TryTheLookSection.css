@@ -629,54 +629,58 @@
   stroke: #b98179;
 }
 
-/* Product Shot — exactly matching female section .runway-card .shot */
+/* Product Shot — perfectly centered horizontally and vertically */
 .ttl-runway-card .shot {
-  flex: 1;
+  flex: 1 1 auto;
   min-height: 0;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   position: relative;
   background: none !important;
   border: none !important;
   border-radius: 0 !important;
   overflow: visible;
-  margin: 0;
-  padding: 4px 0;
+  margin: 0 auto !important;
+  padding: 8px 0;
   cursor: pointer;
 }
 
 .ttl-runway-card .shot img {
-  max-width: 84%;
-  max-height: 90%;
+  display: block !important;
+  margin: 0 auto !important;
+  max-width: 82% !important;
+  max-height: 88% !important;
   width: auto;
   height: auto;
-  object-fit: contain;
+  object-fit: contain !important;
+  object-position: center center !important;
   filter: drop-shadow(0 10px 22px rgba(22, 25, 31, 0.12));
   transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
 }
 
 .ttl-runway-card:hover .shot img {
-  transform: scale(1.07);
+  transform: scale(1.08);
 }
 
 .ttl-card-badge {
   position: absolute;
-  top: 4px;
-  right: 6px;
-  width: 18px;
-  height: 18px;
+  top: 14px;
+  right: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: #16191f;
   color: #ffffff;
-  font-size: 9px;
+  font-size: 9.5px;
   font-weight: 700;
   display: grid;
   place-content: center;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   pointer-events: none;
+  z-index: 5;
 }
 
 /* Meta: exactly matching female section .runway-card .meta */
