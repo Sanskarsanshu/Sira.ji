@@ -30,3 +30,4 @@ export function getAssetImage(fileName: string, fallbackUrl?: string): string {
 export function hasAssetImage(fileName: string): boolean {
   return !!assetMap[fileName.trim().toLowerCase()];
 }
+

@@ -158,15 +158,17 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
   }, [selectedProduct]);
 
   const scrollToLibraryTop = () => {
-    if (!rootRef.current) return;
-    const scroller = rootRef.current.closest('[data-rail-scroll]') as HTMLElement | null;
-    if (scroller) {
-      scroller.scrollTo({ top: Math.max(0, rootRef.current.offsetTop - 48), behavior: 'smooth' });
-      return;
-    }
-    const rect = rootRef.current.getBoundingClientRect();
-    const targetY = window.scrollY + rect.top - 92;
-    window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+    requestAnimationFrame(() => {
+      if (!rootRef.current) return;
+      const scroller = rootRef.current.closest('[data-rail-scroll]') as HTMLElement | null;
+      if (scroller) {
+        scroller.scrollTo({ top: Math.max(0, rootRef.current.offsetTop - 48), behavior: 'smooth' });
+        return;
+      }
+      const rect = rootRef.current.getBoundingClientRect();
+      const targetY = window.scrollY + rect.top - 86;
+      window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+    });
   };
 
   const openProduct = (product: WardrobeProduct) => {
@@ -321,7 +323,7 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
                     }}
                     className="group relative flex cursor-pointer flex-col overflow-hidden rounded-[20px] border border-white/90 bg-[#fffdf9]/90 shadow-[0_14px_34px_-22px_rgba(42,26,18,0.16)] backdrop-blur-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_24px_48px_-22px_rgba(42,26,18,0.26)]"
                   >
-                    <div className="relative h-[265px] w-full overflow-hidden bg-[#efe8dd]">
+                    <div className="relative h-[290px] w-full overflow-hidden bg-[#efe8dd]">
                       <img
                         src={p.image}
                         alt={p.name}
@@ -351,15 +353,15 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
 
                     <div className="flex flex-1 flex-col justify-between p-4">
                       <div>
-                        <div className="mb-1 text-[10px] font-bold tracking-[0.12em] text-[#8c7a6b] uppercase">
+                        <div className="mb-1 text-[10.5px] font-bold tracking-[0.12em] text-[#8c7a6b] uppercase">
                           {p.brand}
                         </div>
-                        <h4 className="mb-1.5 line-clamp-2 min-h-[36px] text-[13.5px] font-semibold leading-snug text-[#2a1a12]">
+                        <h4 className="mb-1.5 line-clamp-2 min-h-[38px] text-[14px] font-semibold leading-snug text-[#2a1a12]">
                           {p.name}
                         </h4>
                         <div className="mb-2 flex items-center gap-1.5 text-[11.5px] text-[#b87d3b]">
                           <span>{renderStars(p.rating)}</span>
-                          <span className="text-[#7a6a5e]">
+                          <span className="text-[#6f5f53] font-medium">
                             {p.rating} ({p.reviews})
                           </span>
                         </div>
@@ -367,20 +369,20 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
 
                       <div>
                         <div className="flex flex-wrap items-baseline gap-2">
-                          <span className="text-[16px] font-bold text-[#2a1a12]">
+                          <span className="text-[17px] font-bold text-[#2a1a12]">
                             {formatInr(p.price)}
                           </span>
-                          <span className="text-[11.5px] text-[#8c7c70] line-through">
+                          <span className="text-[12px] text-[#7a6a5e] line-through">
                             {formatInr(p.mrp)}
                           </span>
-                          <span className="rounded-full bg-[#168044]/10 px-2 py-0.5 text-[10.5px] font-bold text-[#168044]">
+                          <span className="rounded-full bg-[#168044]/12 px-2 py-0.5 text-[10.5px] font-bold text-[#168044]">
                             {p.discount}% off
                           </span>
                         </div>
-                        <div className="mt-2 text-[10.5px] text-[#6f5f53]">
+                        <div className="mt-2 text-[11px] font-medium text-[#5b4a3f]">
                           FREE delivery on eligible orders
                         </div>
-                        <div className="mt-0.5 text-[10.5px] font-medium text-[#9e332e]">
+                        <div className="mt-0.5 text-[11px] font-semibold text-[#9e332e]">
                           Limited-time library edit
                         </div>
                       </div>
@@ -415,19 +417,19 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
           </div>
 
           {/* 3-Column Detail Layout */}
-          <div className="grid grid-cols-1 items-start gap-7 lg:grid-cols-[minmax(0,1.15fr)_minmax(300px,1fr)_290px]">
-            {/* Column 1: Multi-Angle Gallery */}
-            <div className="grid grid-cols-[60px_minmax(0,1fr)] gap-3 sm:grid-cols-[68px_minmax(0,1fr)] lg:sticky lg:top-24">
-              <div className="flex flex-col gap-2.5">
+          <div className="detail-layout grid grid-cols-1 items-start gap-7 lg:grid-cols-[minmax(0,1.15fr)_minmax(300px,1fr)_280px]">
+            {/* Column 1: Multi-Angle Gallery (Sticky) */}
+            <div className="detail-gallery grid grid-cols-[64px_minmax(0,1fr)] gap-3.5 self-start lg:sticky lg:top-[86px]">
+              <div className="thumbs flex flex-col gap-2.5">
                 {selectedProduct.images.map((src, i) => (
                   <button
                     key={src + i}
                     type="button"
                     onClick={() => setActiveImageIdx(i)}
-                    className={`h-[74px] cursor-pointer overflow-hidden rounded-xl border p-0.5 transition-all ${
+                    className={`h-[78px] cursor-pointer overflow-hidden rounded-[12px] border p-0.5 transition-all ${
                       activeImageIdx === i
                         ? 'border-2 border-[#2a1a12] bg-white shadow-sm'
-                        : 'border-[#2a1a12]/15 bg-[#fffdf9]/80 opacity-80 hover:opacity-100'
+                        : 'border-[#d8dde1] bg-white/90 opacity-80 hover:opacity-100'
                     }`}
                   >
                     <img
@@ -439,7 +441,7 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
                 ))}
               </div>
 
-              <div className="relative grid h-[420px] place-items-center overflow-hidden rounded-[22px] border border-white/90 bg-[#efe8dd] sm:h-[540px]">
+              <div className="main-image relative flex h-[520px] items-center justify-center overflow-hidden rounded-[18px] border border-[#e6e8eb] bg-[#f5f6f8] sm:h-[580px] lg:h-[610px] shadow-2xs">
                 <img
                   src={selectedProduct.images[activeImageIdx] ?? selectedProduct.image}
                   alt={selectedProduct.name}
@@ -449,113 +451,116 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
                   type="button"
                   aria-label="Share product"
                   onClick={() => handleShare(selectedProduct)}
-                  className="absolute right-3.5 top-3.5 grid size-10 cursor-pointer place-items-center rounded-full border border-white/85 bg-[#fffdf9]/90 text-[#2a1a12] shadow-md backdrop-blur-md transition-transform hover:scale-105"
+                  className="absolute right-3.5 top-3.5 grid size-10 cursor-pointer place-items-center rounded-full border border-black/10 bg-white text-[#2a1a12] shadow-sm transition-transform hover:scale-105"
                 >
                   <Share2 className="size-4" strokeWidth={1.75} />
                 </button>
               </div>
             </div>
 
-            {/* Column 2: Product Copy, Offers, Options & Specs */}
-            <div className="flex flex-col rounded-[24px] border border-white/85 bg-[#fffdf9]/85 p-5 shadow-[0_16px_40px_-24px_rgba(42,26,18,0.16)] backdrop-blur-xl sm:p-7">
-              <span className="mb-1.5 text-[11px] font-bold tracking-[0.16em] text-[#8c6548] uppercase">
+            {/* Column 2: Product Copy, Offers, Options & Specs (Unboxed natural flow) */}
+            <div className="detail-copy flex flex-col min-w-0 self-start">
+              <a
+                href="#reviews"
+                className="mb-1.5 inline-block text-[13.5px] font-semibold text-[#8c6548] hover:underline"
+              >
                 Visit the {selectedProduct.brand} Studio
-              </span>
-              <h2 className="mb-2.5 text-xl font-medium leading-snug tracking-[-0.015em] text-[#2a1a12] sm:text-2xl">
+              </a>
+              <h2 className="mb-2.5 text-2xl font-medium leading-[1.28] tracking-[-0.015em] text-[#2a1a12] sm:text-[25px]">
                 {selectedProduct.name} | {selectedProduct.brand} Everyday Collection
               </h2>
 
-              <div className="flex items-center gap-2 border-b border-[#2a1a12]/10 pb-3 text-[13px] text-[#b87d3b]">
+              <div className="flex items-center gap-2 border-b border-[#e6e8eb] pb-3 text-[13px] text-[#d88724]">
                 <span>{renderStars(selectedProduct.rating)}</span>
                 <span className="font-semibold text-[#2a1a12]">{selectedProduct.rating}</span>
-                <span className="text-[#6f5f53]">({selectedProduct.reviews} verified ratings)</span>
+                <span className="text-[#6f5f53] font-medium">({selectedProduct.reviews} reviews)</span>
               </div>
 
               <div className="mt-4 flex items-baseline gap-3">
-                <span className="text-2xl font-light text-[#9e332e]">
+                <span className="text-[25px] font-light text-[#c92542]">
                   -{selectedProduct.discount}%
                 </span>
-                <strong className="text-[28px] font-semibold text-[#2a1a12]">
+                <strong className="text-[29px] font-medium text-[#2a1a12]">
                   {formatInr(selectedProduct.price)}
                 </strong>
               </div>
-              <div className="mt-0.5 text-[12px] text-[#7a6a5e]">
+              <div className="mt-0.5 text-[12.5px] text-[#6f5f53]">
                 M.R.P.: <s className="line-through">{formatInr(selectedProduct.mrp)}</s>
               </div>
-              <div className="mt-1 text-[12.5px] font-medium text-[#5b4a3f]">
+              <div className="mt-1 mb-4 text-[13px] font-medium text-[#4a3b31]">
                 Inclusive of all taxes
               </div>
 
               {/* Offers */}
-              <div className="mt-5">
-                <div className="mb-2.5 flex items-center gap-1.5 text-[12.5px] font-bold text-[#2a1a12]">
+              <div className="mt-2">
+                <div className="mb-2.5 flex items-center gap-1.5 text-[13px] font-bold text-[#2a1a12]">
                   <Sparkles className="size-3.5 text-[#8c6548]" />
-                  <span>Atelier &amp; Partner Offers</span>
+                  <span>Offers</span>
                 </div>
                 <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-                  <div className="rounded-xl border border-[#2a1a12]/10 bg-[#faf5ec]/90 p-3 text-[11px] leading-relaxed text-[#5b4a3f]">
-                    <b className="mb-1 block text-[12px] text-[#2a1a12]">Bank Offer</b>
+                  <div className="offer-card rounded-[10px] border border-[#d8dde1] bg-white p-3 text-[11px] leading-[1.4] text-[#555d66] shadow-2xs">
+                    <b className="mb-1.5 block text-[12px] font-bold text-[#2a1a12]">Bank Offer</b>
                     Save extra on selected bank cards and eligible purchases.
                   </div>
-                  <div className="rounded-xl border border-[#2a1a12]/10 bg-[#faf5ec]/90 p-3 text-[11px] leading-relaxed text-[#5b4a3f]">
-                    <b className="mb-1 block text-[12px] text-[#2a1a12]">Partner Offers</b>
+                  <div className="offer-card rounded-[10px] border border-[#d8dde1] bg-white p-3 text-[11px] leading-[1.4] text-[#555d66] shadow-2xs">
+                    <b className="mb-1.5 block text-[12px] font-bold text-[#2a1a12]">Partner Offers</b>
                     Explore payment and partner benefits at checkout.
                   </div>
-                  <div className="rounded-xl border border-[#2a1a12]/10 bg-[#faf5ec]/90 p-3 text-[11px] leading-relaxed text-[#5b4a3f]">
-                    <b className="mb-1 block text-[12px] text-[#2a1a12]">Special Price</b>
+                  <div className="offer-card rounded-[10px] border border-[#d8dde1] bg-white p-3 text-[11px] leading-[1.4] text-[#555d66] shadow-2xs">
+                    <b className="mb-1.5 block text-[12px] font-bold text-[#2a1a12]">Special Price</b>
                     Limited-time pricing on this selected wardrobe piece.
                   </div>
                 </div>
               </div>
 
               {/* Benefits */}
-              <div className="my-5 grid grid-cols-4 gap-2 border-y border-[#2a1a12]/10 py-4 text-center text-[10.5px] font-medium text-[#5b4a3f]">
-                <div className="flex flex-col items-center gap-1.5">
-                  <span className="grid size-8 place-items-center rounded-full bg-[#f3ece1] text-[#2a1a12]">
+              <div className="my-5 flex flex-wrap items-center justify-between gap-3 border-y border-[#e6e8eb] py-4">
+                <div className="flex min-w-[58px] flex-col items-center gap-1.5 text-center">
+                  <span className="benefit-icon grid size-9 place-items-center rounded-full bg-[#f4f5f6] text-[#2a1a12]">
                     <RotateCcw className="size-3.5" />
                   </span>
-                  <span>Easy returns</span>
+                  <span className="text-[10px] font-medium text-[#5b4a3f]">Easy returns</span>
                 </div>
-                <div className="flex flex-col items-center gap-1.5">
-                  <span className="grid size-8 place-items-center rounded-full bg-[#f3ece1] text-[#2a1a12]">
+                <div className="flex min-w-[58px] flex-col items-center gap-1.5 text-center">
+                  <span className="benefit-icon grid size-9 place-items-center rounded-full bg-[#f4f5f6] text-[#2a1a12]">
                     <ShieldCheck className="size-3.5" />
                   </span>
-                  <span>Secure pay</span>
+                  <span className="text-[10px] font-medium text-[#5b4a3f]">Secure pay</span>
                 </div>
-                <div className="flex flex-col items-center gap-1.5">
-                  <span className="grid size-8 place-items-center rounded-full bg-[#f3ece1] text-[#2a1a12]">
+                <div className="flex min-w-[58px] flex-col items-center gap-1.5 text-center">
+                  <span className="benefit-icon grid size-9 place-items-center rounded-full bg-[#f4f5f6] text-[#2a1a12]">
                     <Truck className="size-3.5" />
                   </span>
-                  <span>Free delivery</span>
+                  <span className="text-[10px] font-medium text-[#5b4a3f]">Free delivery</span>
                 </div>
-                <div className="flex flex-col items-center gap-1.5">
-                  <span className="grid size-8 place-items-center rounded-full bg-[#f3ece1] text-[#2a1a12]">
+                <div className="flex min-w-[58px] flex-col items-center gap-1.5 text-center">
+                  <span className="benefit-icon grid size-9 place-items-center rounded-full bg-[#f4f5f6] text-[#2a1a12]">
                     <Star className="size-3.5" />
                   </span>
-                  <span>Quality edit</span>
+                  <span className="text-[10px] font-medium text-[#5b4a3f]">Quality edit</span>
                 </div>
               </div>
 
               {/* Colour & Swatches */}
-              <div className="mb-2 text-[12.5px] text-[#5b4a3f]">
-                Colour: <b className="text-[#2a1a12]">{selectedProduct.color}</b>
+              <div className="mb-2 text-[13px] font-medium text-[#4a3b31]">
+                Colour: <b className="font-bold text-[#2a1a12]">{selectedProduct.color}</b>
               </div>
-              <div className="mb-4 flex flex-wrap gap-2">
+              <div className="mb-4 flex flex-wrap gap-2.5">
                 {selectedProduct.images.map((src, i) => (
                   <button
                     key={src + i}
                     type="button"
                     onClick={() => setActiveImageIdx(i)}
-                    className={`w-[72px] cursor-pointer overflow-hidden rounded-xl border p-1 text-center text-[10px] transition-all ${
+                    className={`swatch-btn w-[74px] cursor-pointer overflow-hidden rounded-[8px] border p-1 text-center text-[10px] transition-all bg-white ${
                       activeImageIdx === i
-                        ? 'border-2 border-[#2a1a12] bg-white font-semibold text-[#2a1a12]'
-                        : 'border-[#2a1a12]/15 bg-[#faf5ec] text-[#6f5f53]'
+                        ? 'border-2 border-[#2a1a12] font-semibold text-[#2a1a12]'
+                        : 'border-[#d9dde1] text-[#555d66]'
                     }`}
                   >
                     <img
                       src={src}
                       alt={`View ${i + 1}`}
-                      className="mb-1 h-12 w-full rounded-lg object-cover"
+                      className="mb-1 h-14 w-full rounded object-cover"
                     />
                     <span>View {i + 1}</span>
                   </button>
@@ -563,10 +568,10 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
               </div>
 
               {/* Size Selector */}
-              <div className="mb-2 text-[12.5px] text-[#5b4a3f]">
-                Size: <b className="text-[#2a1a12]">{selectedSize}</b>
+              <div className="mb-2 text-[13px] font-medium text-[#4a3b31]">
+                Size: <b className="font-bold text-[#2a1a12]">{selectedSize}</b>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="mb-6 flex flex-wrap gap-2">
                 {SIZES.map((sz) => {
                   const active = selectedSize === sz;
                   return (
@@ -574,10 +579,10 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
                       key={sz}
                       type="button"
                       onClick={() => setSelectedSize(sz)}
-                      className={`h-9 min-w-[44px] cursor-pointer rounded-xl border px-3 text-[12px] font-medium transition-all ${
+                      className={`size-btn h-[38px] min-w-[43px] cursor-pointer rounded-[8px] border px-3.5 text-[12px] transition-all ${
                         active
-                          ? 'border-2 border-[#2a1a12] bg-[#2a1a12] font-semibold text-[#fbf7f1]'
-                          : 'border-[#2a1a12]/15 bg-white text-[#2a1a12] hover:border-[#2a1a12]'
+                          ? 'border-2 border-[#2a1a12] bg-[#2a1a12] font-bold text-[#fbf7f1]'
+                          : 'border-[#b9c0c7] bg-white font-medium text-[#2a1a12] hover:border-[#2a1a12]'
                       }`}
                     >
                       {sz}
@@ -587,9 +592,9 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
               </div>
 
               {/* Product Details Table */}
-              <div className="mt-6 border-t border-[#2a1a12]/10 pt-4">
-                <h3 className="mb-3 text-[15px] font-semibold text-[#2a1a12]">Product details</h3>
-                <div className="grid grid-cols-1 gap-y-2 text-[12.5px]">
+              <div className="mt-6 border-t border-[#e6e8eb] pt-4">
+                <h3 className="mb-3 text-[16px] font-semibold text-[#2a1a12]">Product details</h3>
+                <div className="grid grid-cols-1 gap-y-1.5 text-[12.5px]">
                   {[
                     ['Material composition', selectedProduct.material],
                     ['Sleeve type', selectedProduct.sleeve],
@@ -598,18 +603,18 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
                     ['Care instructions', 'Machine wash cold, gentle cycle'],
                     ['Country of origin', 'Designed for everyday wear'],
                   ].map(([label, val]) => (
-                    <div key={label} className="grid grid-cols-[44%_56%] gap-2 py-0.5">
-                      <b className="font-semibold text-[#4a3b31]">{label}</b>
-                      <span className="text-[#6f5f53]">{val}</span>
+                    <div key={label} className="grid grid-cols-[44%_56%] gap-2 py-1 border-b border-[#2a1a12]/6">
+                      <b className="font-semibold text-[#2a1a12]">{label}</b>
+                      <span className="text-[#555d66]">{val}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* About This Item */}
-              <div className="mt-5 border-t border-[#2a1a12]/10 pt-4 text-[13px] leading-relaxed text-[#5b4a3f]">
-                <h3 className="mb-2 text-[15px] font-semibold text-[#2a1a12]">About this item</h3>
-                <ul className="list-disc space-y-1.5 pl-4">
+              <div className="mt-5 border-t border-[#e6e8eb] pt-4 text-[13px] leading-relaxed text-[#4a3b31]">
+                <h3 className="mb-2 text-[16px] font-semibold text-[#2a1a12]">About this item</h3>
+                <ul className="list-disc space-y-1.5 pl-4.5">
                   {selectedProduct.about.map((point) => (
                     <li key={point}>{point}</li>
                   ))}
@@ -618,14 +623,15 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
             </div>
 
             {/* Column 3: Sticky Acquisition Buy Box */}
-            <aside className="rounded-[24px] border border-white/90 bg-[#fffdf9]/90 p-5 shadow-[0_18px_42px_-24px_rgba(42,26,18,0.2)] backdrop-blur-xl lg:sticky lg:top-24">
-              <div className="mb-3 text-[28px] font-semibold text-[#2a1a12]">
-                {formatInr(selectedProduct.price)}
+            <aside className="detail-buybox self-start rounded-[16px] border border-[#d8dde1] bg-white p-5 shadow-sm lg:sticky lg:top-[86px]">
+              <div className="mb-3 text-[27px] font-medium text-[#2a1a12]">
+                <small className="text-[14px] align-top">₹</small>
+                {Number(selectedProduct.price).toLocaleString('en-IN')}
               </div>
-              <div className="mb-3 text-[12px] leading-relaxed text-[#5b4a3f]">
-                FREE delivery <b className="text-[#2a1a12]">in 3–5 business days</b>
+              <div className="mb-3 text-[12px] leading-relaxed text-[#555d66]">
+                FREE delivery <b className="font-semibold text-[#2a1a12]">in 3–5 business days</b>
                 <br />
-                <span className="text-[#8c6548]">Delivering to your location</span>
+                <span className="font-medium text-[#8c6548]">Delivering to your location</span>
               </div>
               <div className="my-3 flex items-center gap-1.5 text-[14px] font-semibold text-[#168044]">
                 <Check className="size-4" strokeWidth={2.2} />
@@ -636,7 +642,7 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
                 value={quantity}
                 onChange={(e) => setQuantity(Number(e.target.value))}
                 aria-label="Select quantity"
-                className="mb-3 w-full cursor-pointer rounded-xl border border-[#2a1a12]/15 bg-white px-3.5 py-2.5 text-[12.5px] font-medium text-[#2a1a12] outline-none focus:border-[#2a1a12]"
+                className="qty-select mb-3 w-full cursor-pointer rounded-[8px] border border-[#bfc5ca] bg-white px-3 py-2.5 text-[12.5px] font-medium text-[#2a1a12] outline-none"
               >
                 {[1, 2, 3, 4, 5].map((n) => (
                   <option key={n} value={n}>
@@ -649,7 +655,7 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
                 <button
                   type="button"
                   onClick={() => handleAddToCart(selectedProduct, quantity)}
-                  className="inline-flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#3b2116] px-5 text-[12.5px] font-semibold tracking-[0.05em] text-[#f6ede2] uppercase shadow-[0_12px_24px_-10px_rgba(59,33,22,0.5)] transition-all hover:-translate-y-0.5 hover:bg-[#2a1a12]"
+                  className="btn-add-bag flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-[#3b2116] px-4 text-[12.5px] font-semibold tracking-[0.05em] text-[#f6ede2] uppercase shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[#2a1a12]"
                 >
                   <ShoppingBag className="size-4" strokeWidth={1.75} />
                   <span>Add to bag</span>
@@ -658,38 +664,38 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
                 <button
                   type="button"
                   onClick={() => handleBuyNow(selectedProduct, quantity)}
-                  className="inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-full border border-[#2a1a12]/15 bg-[#e9dfd1] px-5 text-[12.5px] font-semibold tracking-[0.05em] text-[#2a1a12] uppercase transition-all hover:-translate-y-0.5 hover:bg-[#dfd1be]"
+                  className="btn-buy-now flex h-11 w-full cursor-pointer items-center justify-center rounded-full border border-[#2a1a12]/15 bg-[#e9dfd1] px-4 text-[12.5px] font-semibold tracking-[0.05em] text-[#2a1a12] uppercase transition-all hover:-translate-y-0.5 hover:bg-[#dfd1be]"
                 >
                   Buy now
                 </button>
               </div>
 
-              <div className="my-4 space-y-1 border-y border-[#2a1a12]/10 py-3 text-[11.5px] text-[#6f5f53]">
+              <div className="my-3 space-y-1.5 border-y border-[#e6e8eb] py-3 text-[11.5px] leading-[1.8] text-[#555d66]">
                 <div className="flex justify-between">
                   <span>Ships from</span>
-                  <b className="font-medium text-[#2a1a12]">WARDROBE · Sera.ji</b>
+                  <b className="font-semibold text-[#2a1a12]">WARDROBE · Sera.ji</b>
                 </div>
                 <div className="flex justify-between">
                   <span>Sold by</span>
-                  <b className="font-medium text-[#2a1a12]">{selectedProduct.brand} Studio</b>
+                  <b className="font-semibold text-[#2a1a12]">{selectedProduct.brand} Studio</b>
                 </div>
                 <div className="flex justify-between">
                   <span>Payment</span>
-                  <b className="font-medium text-[#2a1a12]">Secure checkout</b>
+                  <b className="font-semibold text-[#2a1a12]">Secure checkout</b>
                 </div>
                 <div className="flex justify-between">
                   <span>Gift options</span>
-                  <b className="font-medium text-[#2a1a12]">At checkout</b>
+                  <b className="font-semibold text-[#2a1a12]">At checkout</b>
                 </div>
               </div>
 
               <button
                 type="button"
                 onClick={() => handleToggleWish(selectedProduct)}
-                className={`inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-[12px] font-medium transition-all ${
+                className={`btn-wishlist flex w-full cursor-pointer items-center justify-center gap-2 rounded-[10px] border px-4 py-2.5 text-[12px] font-medium transition-all ${
                   isSaved(selectedProduct)
                     ? 'border-[#2a1a12] bg-[#2a1a12] text-[#fbf7f1]'
-                    : 'border-[#2a1a12]/18 bg-white text-[#2a1a12] hover:border-[#2a1a12]'
+                    : 'border-[#9da5ad] bg-white text-[#2a1a12] hover:border-[#2a1a12]'
                 }`}
               >
                 <Heart
@@ -706,7 +712,7 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
 
           {/* Customers Also Explored */}
           <div className="mt-10 border-t border-[#2a1a12]/10 pt-7">
-            <h4 className="mb-4 text-[18px] font-medium tracking-[-0.01em] text-[#2a1a12]">
+            <h4 className="mb-4 text-[18px] font-semibold tracking-[-0.01em] text-[#2a1a12]">
               Customers also explored
             </h4>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
@@ -714,20 +720,20 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
                 <article
                   key={rec.id}
                   onClick={() => openProduct(rec)}
-                  className="group cursor-pointer rounded-2xl border border-white/85 bg-[#fffdf9]/85 p-2.5 transition-all hover:-translate-y-1 hover:shadow-md"
+                  className="group cursor-pointer rounded-2xl border border-white/85 bg-[#fffdf9]/85 p-2.5 shadow-2xs transition-all hover:-translate-y-1 hover:shadow-md"
                 >
                   <div className="overflow-hidden rounded-xl bg-[#efe8dd]">
                     <img
                       src={rec.image}
                       alt={rec.name}
                       loading="lazy"
-                      className="h-[165px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="h-[190px] w-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   </div>
-                  <p className="mt-2 line-clamp-2 text-[12px] font-medium leading-snug text-[#4a3b31] group-hover:text-[#2a1a12]">
+                  <p className="mt-2 line-clamp-2 text-[12.5px] font-medium leading-snug text-[#4a3b31] group-hover:text-[#2a1a12]">
                     {rec.brand} · {rec.name}
                   </p>
-                  <b className="mt-1 block text-[13.5px] font-bold text-[#2a1a12]">
+                  <b className="mt-1 block text-[14px] font-bold text-[#2a1a12]">
                     {formatInr(rec.price)}
                   </b>
                 </article>

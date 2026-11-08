@@ -150,10 +150,26 @@
    SECTION 5 PULL LAMP THEME (SCOPED TO EDITORIAL SECTION ONLY)
    ==================================================================== */
 .editorial-shell {
+  overflow: visible !important;
   transition: background 0.65s cubic-bezier(0.22, 1, 0.36, 1),
               border-color 0.65s ease,
               box-shadow 0.65s ease,
               color 0.65s ease;
+  --color-foreground: #2a1a12;
+  --color-muted-foreground: #5b4a3f;
+  --color-card: #fffdf9;
+  --color-card-foreground: #2a1a12;
+  --color-border: rgba(42, 26, 18, 0.14);
+  color: #2a1a12;
+}
+
+.editorial-shell[data-theme="light"] {
+  --color-foreground: #2a1a12;
+  --color-muted-foreground: #5b4a3f;
+  --color-card: #fffdf9;
+  --color-card-foreground: #2a1a12;
+  --color-border: rgba(42, 26, 18, 0.14);
+  color: #2a1a12 !important;
 }
 
 .editorial-shell[data-theme="dark"] {
@@ -249,6 +265,11 @@
   color: #f2eee0 !important;
 }
 
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] h2,
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] h3,
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] h4,
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] strong,
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] b,
 .editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .text-\[\#2a1a12\] {
   color: #f2eee0 !important;
 }
@@ -257,12 +278,23 @@
 .editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .text-\[\#7a6a5e\],
 .editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .text-\[\#8c7a6b\],
 .editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .text-\[\#4a3b31\],
-.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .text-\[\#5b4a3f\] {
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .text-\[\#5b4a3f\],
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .text-\[\#555d66\],
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .text-\[\#646c75\],
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .text-\[\#737b83\] {
   color: #a0afa6 !important;
 }
 
 .editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .text-\[\#8c6548\] {
   color: #d8b98b !important;
+}
+
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .text-\[\#c92542\] {
+  color: #f87171 !important;
+}
+
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .text-\[\#168044\] {
+  color: #4ade80 !important;
 }
 
 .editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] article {
@@ -287,25 +319,120 @@
 }
 
 .editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] input[type="search"],
-.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] select {
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] select,
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .qty-select {
   background: rgba(23, 39, 32, 0.9) !important;
   border-color: rgba(255, 255, 255, 0.15) !important;
   color: #f2eee0 !important;
 }
 
-.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] aside {
-  background: rgba(23, 39, 32, 0.92) !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] aside,
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .detail-buybox {
+  background: rgba(20, 35, 27, 0.94) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
   color: #f2eee0 !important;
 }
 
-.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .detail-view > div:nth-child(2) > div:nth-child(2) {
-  background: rgba(23, 39, 32, 0.88) !important;
-  border-color: rgba(255, 255, 255, 0.12) !important;
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .detail-copy {
   color: #f2eee0 !important;
 }
 
-/* Detail View: Back to clothing library button in Dark Mode */
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .border-\[\#e6e8eb\],
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .border-\[\#d8dde1\],
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .border-\[\#2a1a12\]\/6,
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .border-\[\#2a1a12\]\/10 {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Detail View: Gallery Main Image Frame in Dark Mode */
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .main-image {
+  background: #14231b !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Detail View: Thumbs & Swatches in Dark Mode */
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .thumbs button,
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .swatch-btn {
+  background: #172720 !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #a0afa6 !important;
+}
+
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .thumbs button.border-2,
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .swatch-btn.border-2 {
+  border-color: #f2eee0 !important;
+  color: #f2eee0 !important;
+}
+
+/* Detail View: Size Buttons in Dark Mode */
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .size-btn {
+  background: #172720 !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #f2eee0 !important;
+}
+
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .size-btn.border-2 {
+  background: #f2eee0 !important;
+  border-color: #f2eee0 !important;
+  color: #101b17 !important;
+}
+
+/* Detail View: Offer Cards in Dark Mode */
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .offer-card {
+  background: rgba(18, 34, 27, 0.9) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #a0afa6 !important;
+}
+
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .offer-card b {
+  color: #f2eee0 !important;
+}
+
+/* Detail View: Benefit Icons in Dark Mode */
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .benefit-icon {
+  background: #1e362b !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: #d4a568 !important;
+}
+
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .benefit-icon svg {
+  color: #d4a568 !important;
+}
+
+/* Detail View: Buttons in Dark Mode */
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .btn-add-bag {
+  background: #243d32 !important;
+  color: #f2eee0 !important;
+  border: 1px solid rgba(212, 165, 104, 0.3) !important;
+  box-shadow: 0 14px 28px -12px rgba(0, 0, 0, 0.65) !important;
+}
+
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .btn-add-bag:hover {
+  background: #2d4d3f !important;
+}
+
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .btn-buy-now {
+  background: #d4a568 !important;
+  border-color: #d4a568 !important;
+  color: #101b17 !important;
+  font-weight: 700 !important;
+}
+
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .btn-buy-now:hover {
+  background: #e2b77d !important;
+}
+
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .btn-wishlist {
+  background: rgba(23, 39, 32, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  color: #f2eee0 !important;
+}
+
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .btn-wishlist:hover {
+  border-color: #d4a568 !important;
+  color: #d4a568 !important;
+}
+
 .editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .detail-view button.bg-\[\#fffdf9\] {
   background: #172720 !important;
   border-color: rgba(255, 255, 255, 0.18) !important;
@@ -317,66 +444,14 @@
   color: #ffffff !important;
 }
 
-/* Detail View: 3 Atelier & Partner Offers Cards in Dark Mode */
-.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .bg-\[\#faf5ec\]\/90 {
-  background: rgba(18, 34, 27, 0.9) !important;
-  border-color: rgba(255, 255, 255, 0.14) !important;
-  color: #a0afa6 !important;
-}
-
-.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .bg-\[\#faf5ec\]\/90 b {
-  color: #f2eee0 !important;
-}
-
-/* Detail View: 4 Benefit Icons (Easy returns, Secure pay, Free delivery, Quality edit) */
-.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .bg-\[\#f3ece1\] {
-  background: #1e362b !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  color: #d4a568 !important;
-}
-
-.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .bg-\[\#f3ece1\] svg {
-  color: #d4a568 !important;
-}
-
-/* Detail View: Buy now button in Dark Mode */
-.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] button.bg-\[\#e9dfd1\] {
-  background: #d4a568 !important;
-  border-color: #d4a568 !important;
-  color: #101b17 !important;
-  font-weight: 700 !important;
-}
-
-.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] button.bg-\[\#e9dfd1\]:hover {
-  background: #e2b77d !important;
-  border-color: #e2b77d !important;
-}
-
-/* Detail View: Swatches, Sizes, Selects and Small Thumbnails in Dark Mode */
-.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] button.bg-white {
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .main-image button {
   background: #172720 !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
   color: #f2eee0 !important;
-}
-
-.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] button.bg-\[\#faf5ec\] {
-  background: rgba(18, 34, 27, 0.8) !important;
-  border-color: rgba(255, 255, 255, 0.1) !important;
-  color: #a0afa6 !important;
-}
-
-.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] button.bg-\[\#2a1a12\] {
-  background: #d4a568 !important;
-  border-color: #d4a568 !important;
-  color: #101b17 !important;
 }
 
 .editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .bg-\[\#efe8dd\] {
   background: #14221b !important;
-}
-
-.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .border-\[\#2a1a12\]\/10 {
-  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .wrap {

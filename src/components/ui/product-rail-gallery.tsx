@@ -949,7 +949,7 @@ export function ClothingRailHero({
       data-mode={size.carousel ? "carousel" : "rail"}
       data-active={active ?? ""}
       aria-roledescription="clothing rail"
-      className={cn("relative isolate w-full overflow-hidden bg-background text-foreground", className)}
+      className={cn("relative isolate w-full overflow-visible bg-background text-foreground", className)}
     >
       <Defs uid={uid} />
       {!className?.includes("bg-transparent") && (
@@ -964,7 +964,6 @@ export function ClothingRailHero({
 
       <div
         className="relative grid grid-cols-1 items-start"
-        style={{ clipPath: "inset(0px -100vw -100vh -100vw)" }}
       >
         <div
           aria-hidden={openIndex !== null || undefined}

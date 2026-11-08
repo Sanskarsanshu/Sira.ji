@@ -2398,3 +2398,4 @@ export const WARDROBE_PRODUCTS: WardrobeProduct[] = [
     ],
   },
 ];
+
