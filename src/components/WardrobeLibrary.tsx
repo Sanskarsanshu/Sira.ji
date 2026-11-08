@@ -419,26 +419,33 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
           {/* 3-Column Detail Layout */}
           <div className="detail-layout grid grid-cols-1 items-start gap-7 lg:grid-cols-[minmax(0,1.15fr)_minmax(300px,1fr)_280px]">
             {/* Column 1: Multi-Angle Gallery (Sticky) */}
-            <div className="detail-gallery grid grid-cols-[64px_minmax(0,1fr)] gap-3.5 self-start lg:sticky lg:top-[86px]">
-              <div className="thumbs flex flex-col gap-2.5">
-                {selectedProduct.images.map((src, i) => (
-                  <button
-                    key={src + i}
-                    type="button"
-                    onClick={() => setActiveImageIdx(i)}
-                    className={`h-[78px] cursor-pointer overflow-hidden rounded-[12px] border p-0.5 transition-all ${
-                      activeImageIdx === i
-                        ? 'border-2 border-[#2a1a12] bg-white shadow-sm'
-                        : 'border-[#d8dde1] bg-white/90 opacity-80 hover:opacity-100'
-                    }`}
-                  >
-                    <img
-                      src={src}
-                      alt={`${selectedProduct.name} view ${i + 1}`}
-                      className="h-full w-full rounded-[9px] object-cover"
-                    />
-                  </button>
-                ))}
+            <div className="detail-gallery grid grid-cols-[64px_minmax(0,1fr)] sm:grid-cols-[76px_minmax(0,1fr)] gap-3.5 self-start lg:sticky lg:top-[86px]">
+              <div className="detail-gallery-thumbs flex flex-col gap-2.5 sm:gap-3">
+                {selectedProduct.images.map((src, i) => {
+                  const isActive = activeImageIdx === i;
+                  return (
+                    <button
+                      key={src + i}
+                      type="button"
+                      aria-label={`View angle ${i + 1} of ${selectedProduct.name}`}
+                      data-active={isActive}
+                      onClick={() => setActiveImageIdx(i)}
+                      onMouseEnter={() => setActiveImageIdx(i)}
+                      className={`detail-thumb-btn group relative h-[82px] w-[64px] sm:h-[94px] sm:w-[76px] cursor-pointer overflow-hidden rounded-[12px] border-2 p-[2px] transition-all duration-200 ${
+                        isActive
+                          ? 'is-active border-[#2a1a12] bg-white shadow-md ring-1 ring-[#2a1a12]/20'
+                          : 'border-[#d8dde1] bg-white/90 opacity-80 hover:border-[#8c6548] hover:opacity-100 hover:shadow-xs'
+                      }`}
+                    >
+                      <img
+                        src={src}
+                        alt={`${selectedProduct.name} angle ${i + 1}`}
+                        className="h-full w-full rounded-[8px] object-cover transition-transform duration-300 group-hover:scale-[1.04]"
+                      />
+                      <span className="sr-only">Angle {i + 1}</span>
+                    </button>
+                  );
+                })}
               </div>
 
               <div className="main-image relative flex h-[520px] items-center justify-center overflow-hidden rounded-[18px] border border-[#e6e8eb] bg-[#f5f6f8] sm:h-[580px] lg:h-[610px] shadow-2xs">

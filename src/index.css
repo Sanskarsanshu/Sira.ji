@@ -350,18 +350,64 @@
   border-color: rgba(255, 255, 255, 0.12) !important;
 }
 
+/* Detail View: Left Vertical Thumbnail Strip (Both Light & Dark) */
+.editorial-shell [data-slot="wardrobe-library"] .detail-gallery-thumbs {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 76px !important;
+  min-width: 64px !important;
+  gap: 12px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.editorial-shell [data-slot="wardrobe-library"] .detail-thumb-btn {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  aspect-ratio: 4 / 5 !important;
+  flex-shrink: 0 !important;
+  padding: 3px !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  cursor: pointer !important;
+  background: #ffffff !important;
+  border: 2px solid #d8dde1 !important;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+.editorial-shell [data-slot="wardrobe-library"] .detail-thumb-btn img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: auto !important;
+  object-fit: cover !important;
+  border-radius: 8px !important;
+}
+
+.editorial-shell [data-slot="wardrobe-library"] .detail-thumb-btn.is-active,
+.editorial-shell [data-slot="wardrobe-library"] .detail-thumb-btn[data-active="true"] {
+  border-color: #2a1a12 !important;
+  box-shadow: 0 4px 14px rgba(42, 26, 18, 0.16) !important;
+  opacity: 1 !important;
+}
+
 /* Detail View: Thumbs & Swatches in Dark Mode */
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .detail-thumb-btn,
 .editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .thumbs button,
 .editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .swatch-btn {
   background: #172720 !important;
-  border-color: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
   color: #a0afa6 !important;
 }
 
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .detail-thumb-btn.is-active,
+.editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .detail-thumb-btn[data-active="true"],
 .editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .thumbs button.border-2,
 .editorial-shell[data-theme="dark"] [data-slot="wardrobe-library"] .swatch-btn.border-2 {
   border-color: #f2eee0 !important;
   color: #f2eee0 !important;
+  box-shadow: 0 0 0 1px rgba(242, 238, 224, 0.4), 0 6px 18px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* Detail View: Size Buttons in Dark Mode */
@@ -1438,14 +1484,14 @@ body.menu-open .mmenu a {
   color: #8a7a6e;
 }
 
-.thumbs {
+.g-card .thumbs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   margin-top: 12px;
 }
 
-.thumbs img {
+.g-card .thumbs img {
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;

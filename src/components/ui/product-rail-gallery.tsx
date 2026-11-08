@@ -1287,16 +1287,19 @@ function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAdd
       <div
         aria-hidden="true"
         className={cn(
-          "pointer-events-none absolute left-1/2 h-[220px] w-[3px] -translate-x-1/2 rounded-full transition-opacity duration-300 motion-reduce:transition-none",
+          "pointer-events-none absolute left-1/2 w-[2.5px] -translate-x-1/2 rounded-full transition-opacity duration-300 motion-reduce:transition-none",
           shown ? "opacity-100 delay-100" : "opacity-0",
         )}
         style={{
+          height: "64px",
+          top: `calc(-64px + ${(HOOK_TOP / VB_H) * 100}%)`,
           background: "linear-gradient(to right, color-mix(in oklab, var(--color-muted-foreground) 50%, white), var(--color-muted-foreground), color-mix(in oklab, var(--color-muted-foreground) 50%, black))",
-          top: `calc(-220px + ${(HOOK_TOP / VB_H) * 100}%)`,
-          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 26px)",
-          maskImage: "linear-gradient(to bottom, transparent 0%, black 26px)",
+          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 14px)",
+          maskImage: "linear-gradient(to bottom, transparent 0%, black 14px)",
         }}
-      />
+      >
+        <span className="absolute -top-1 left-1/2 size-1.5 -translate-x-1/2 rounded-full bg-foreground/40 shadow-xs" />
+      </div>
       <div
         className="absolute inset-0 cursor-grab touch-pan-y active:cursor-grabbing"
         style={{ perspective: "1400px" }}
