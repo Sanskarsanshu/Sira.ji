@@ -715,8 +715,9 @@ body.menu-open .burger i:last-child {
   justify-content: center;
   gap: 18px;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity .5s var(--ease);
+  transition: opacity .5s var(--ease), visibility .5s var(--ease);
 }
 
 .mmenu a {
@@ -730,6 +731,7 @@ body.menu-open .burger i:last-child {
 
 body.menu-open .mmenu {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
 }
 

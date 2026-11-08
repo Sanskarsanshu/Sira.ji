@@ -1642,6 +1642,22 @@
     right: 14px;
     bottom: 14px;
   }
+  .ttl-rolling-look {
+    font-size: 18px;
+    line-height: 24px;
+  }
+  .ttl-look-win,
+  .ttl-look-roll b {
+    height: 24px;
+    line-height: 24px;
+  }
+  .ttl-ticks-group {
+    margin-left: 8px;
+    gap: 4px;
+  }
+  .ttl-tick-btn.active {
+    flex: 0 0 100px;
+  }
   .ttl-glass-suite {
     left: 14px;
     top: 14px;

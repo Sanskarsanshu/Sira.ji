@@ -978,8 +978,8 @@ export function ClothingRailHero({
             data-stage
             role="group"
             aria-label={heading ?? "Clothing rail"}
-            className="relative mt-5 w-full touch-pan-y select-none"
-            style={{ height: Math.round(railY + h * bottom + h * 0.05 + 12), overflowX: "clip" }}
+            className="relative mt-5 w-full max-w-full touch-pan-y select-none overflow-hidden"
+            style={{ height: Math.round(railY + h * bottom + h * 0.05 + 12), overflow: "hidden" }}
             onPointerMove={onPointerMove}
             onPointerDown={onPointerDown}
             onPointerUp={(event) => finishPointer(event, false)}

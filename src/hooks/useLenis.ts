@@ -1,6 +1,43 @@
 import { useEffect } from 'react';
 import Lenis from 'lenis';
 
+export function scrollToTarget(
+  target: HTMLElement | string | number | null,
+  options: { offset?: number; duration?: number; immediate?: boolean } = {}
+) {
+  if (!target && typeof target !== 'number') return;
+  const { offset = -86, duration = 0.8, immediate = false } = options;
+
+  if (typeof window === 'undefined') return;
+
+  const lenis = (window as any).__lenis || (window as any).lenisInstance;
+  if (lenis && typeof lenis.scrollTo === 'function') {
+    lenis.scrollTo(target, {
+      offset,
+      duration: immediate ? 0 : duration,
+      force: true,
+      immediate,
+    });
+    return;
+  }
+
+  let targetY = 0;
+  if (typeof target === 'number') {
+    targetY = target + offset;
+  } else if (typeof target === 'string') {
+    const el = document.querySelector(target);
+    if (el) {
+      targetY = window.scrollY + el.getBoundingClientRect().top + offset;
+    }
+  } else if (target instanceof HTMLElement) {
+    targetY = window.scrollY + target.getBoundingClientRect().top + offset;
+  }
+  window.scrollTo({
+    top: Math.max(0, targetY),
+    behavior: immediate ? 'auto' : 'smooth',
+  });
+}
+
 export function useLenis() {
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -27,6 +64,9 @@ export function useLenis() {
       smoothWheel: true,
     });
 
+    (window as any).__lenis = lenis;
+    (window as any).lenisInstance = lenis;
+
     lenis.on('scroll', onScroll);
 
     let rafId: number;
@@ -41,6 +81,8 @@ export function useLenis() {
     return () => {
       cancelAnimationFrame(rafId);
       lenis.destroy();
+      (window as any).__lenis = null;
+      (window as any).lenisInstance = null;
     };
   }, []);
 }

@@ -14,6 +14,7 @@ import {
   Truck,
 } from 'lucide-react';
 import { useAtelier } from '../context/AtelierContext';
+import { scrollToTarget } from '../hooks/useLenis';
 import type { CapsulePiece } from '../types';
 import {
   WARDROBE_PRODUCTS,
@@ -61,6 +62,7 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
   } = useAtelier();
 
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const detailTopRef = useRef<HTMLDivElement | null>(null);
   const [activeFilter, setActiveFilter] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<'featured' | 'low' | 'high' | 'rating'>('featured');
@@ -157,31 +159,59 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
     return [...sameCat, ...others].slice(0, 5);
   }, [selectedProduct]);
 
-  const scrollToLibraryTop = () => {
+  const scrollToDetailTop = (immediate = false) => {
+    const trigger = (instant: boolean) => {
+      const el = detailTopRef.current || rootRef.current;
+      if (!el) return;
+      scrollToTarget(el, { offset: -86, duration: 0.75, immediate: instant });
+    };
+
+    trigger(immediate);
     requestAnimationFrame(() => {
-      if (!rootRef.current) return;
-      const scroller = rootRef.current.closest('[data-rail-scroll]') as HTMLElement | null;
-      if (scroller) {
-        scroller.scrollTo({ top: Math.max(0, rootRef.current.offsetTop - 48), behavior: 'smooth' });
-        return;
-      }
-      const rect = rootRef.current.getBoundingClientRect();
-      const targetY = window.scrollY + rect.top - 86;
-      window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+      trigger(immediate);
     });
+    setTimeout(() => {
+      trigger(immediate);
+    }, 40);
+    setTimeout(() => {
+      const el = detailTopRef.current || rootRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      if (Math.abs(rect.top - 86) > 40) {
+        trigger(false);
+      }
+    }, 140);
   };
+
+  const scrollToCatalogTop = () => {
+    const trigger = () => {
+      const el = rootRef.current;
+      if (!el) return;
+      scrollToTarget(el, { offset: -86, duration: 0.65 });
+    };
+    trigger();
+    requestAnimationFrame(trigger);
+    setTimeout(trigger, 50);
+  };
+
+  // Guarantee that whenever a product is selected or switched,
+  // the viewport smoothly positions at the top of the detail view
+  useEffect(() => {
+    if (!selectedProduct) return;
+    scrollToDetailTop();
+  }, [selectedProduct?.id]);
 
   const openProduct = (product: WardrobeProduct) => {
     setSelectedProduct(product);
     setActiveImageIdx(0);
     setSelectedSize('M');
     setQuantity(1);
-    scrollToLibraryTop();
+    scrollToDetailTop();
   };
 
   const backToCatalog = () => {
     setSelectedProduct(null);
-    scrollToLibraryTop();
+    scrollToCatalogTop();
   };
 
   const handleAddToCart = (product: WardrobeProduct, qty = 1) => {
@@ -307,7 +337,7 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
 
           {/* 4-Column Product Grid */}
           {filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-5">
               {filteredProducts.map((p) => {
                 const saved = isSaved(p);
                 return (
@@ -399,7 +429,12 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
         </div>
       ) : (
         /* DETAIL VIEW */
-        <div className="detail-view animate-in fade-in [animation-duration:320ms]">
+        <div
+          ref={detailTopRef}
+          data-detail-anchor="true"
+          tabIndex={-1}
+          className="detail-view scroll-mt-[86px] outline-none animate-in fade-in [animation-duration:320ms]"
+        >
           {/* Breadcrumb Bar */}
           <div className="mb-6 flex flex-wrap items-center gap-2 text-[12.5px] text-[#6f5f53]">
             <button
@@ -416,10 +451,10 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
             <span className="font-medium text-[#2a1a12]">{selectedProduct.name}</span>
           </div>
 
-          {/* 3-Column Detail Layout */}
-          <div className="detail-layout grid grid-cols-1 items-start gap-7 lg:grid-cols-[minmax(0,1.15fr)_minmax(300px,1fr)_280px]">
+          {/* 3-Column / 2-Column Responsive Detail Layout */}
+          <div className="detail-layout grid grid-cols-1 items-start gap-7 md:grid-cols-2 lg:grid-cols-[minmax(0,1.15fr)_minmax(300px,1fr)_280px]">
             {/* Column 1: Multi-Angle Gallery (Sticky) */}
-            <div className="detail-gallery grid grid-cols-[64px_minmax(0,1fr)] sm:grid-cols-[76px_minmax(0,1fr)] gap-3.5 self-start lg:sticky lg:top-[86px]">
+            <div className="detail-gallery grid grid-cols-[60px_minmax(0,1fr)] sm:grid-cols-[72px_minmax(0,1fr)] md:grid-cols-[76px_minmax(0,1fr)] gap-3.5 self-start md:sticky md:top-[86px] md:row-span-2 md:col-start-1 lg:row-span-1">
               <div className="detail-gallery-thumbs flex flex-col gap-2.5 sm:gap-3">
                 {selectedProduct.images.map((src, i) => {
                   const isActive = activeImageIdx === i;
@@ -431,7 +466,7 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
                       data-active={isActive}
                       onClick={() => setActiveImageIdx(i)}
                       onMouseEnter={() => setActiveImageIdx(i)}
-                      className={`detail-thumb-btn group relative h-[82px] w-[64px] sm:h-[94px] sm:w-[76px] cursor-pointer overflow-hidden rounded-[12px] border-2 p-[2px] transition-all duration-200 ${
+                      className={`detail-thumb-btn group relative h-[78px] w-[60px] sm:h-[86px] sm:w-[72px] md:h-[94px] md:w-[76px] cursor-pointer overflow-hidden rounded-[12px] border-2 p-[2px] transition-all duration-200 ${
                         isActive
                           ? 'is-active border-[#2a1a12] bg-white shadow-md ring-1 ring-[#2a1a12]/20'
                           : 'border-[#d8dde1] bg-white/90 opacity-80 hover:border-[#8c6548] hover:opacity-100 hover:shadow-xs'
@@ -448,7 +483,7 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
                 })}
               </div>
 
-              <div className="main-image relative flex h-[520px] items-center justify-center overflow-hidden rounded-[18px] border border-[#e6e8eb] bg-[#f5f6f8] sm:h-[580px] lg:h-[610px] shadow-2xs">
+              <div className="main-image relative flex h-[380px] sm:h-[460px] md:h-[520px] lg:h-[610px] items-center justify-center overflow-hidden rounded-[18px] border border-[#e6e8eb] bg-[#f5f6f8] shadow-2xs">
                 <img
                   src={selectedProduct.images[activeImageIdx] ?? selectedProduct.image}
                   alt={selectedProduct.name}
@@ -466,7 +501,7 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
             </div>
 
             {/* Column 2: Product Copy, Offers, Options & Specs (Unboxed natural flow) */}
-            <div className="detail-copy flex flex-col min-w-0 self-start">
+            <div className="detail-copy flex flex-col min-w-0 self-start md:col-start-2 md:row-start-1 lg:col-start-2">
               <a
                 href="#reviews"
                 className="mb-1.5 inline-block text-[13.5px] font-semibold text-[#8c6548] hover:underline"
@@ -630,7 +665,7 @@ export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIn
             </div>
 
             {/* Column 3: Sticky Acquisition Buy Box */}
-            <aside className="detail-buybox self-start rounded-[16px] border border-[#d8dde1] bg-white p-5 shadow-sm lg:sticky lg:top-[86px]">
+            <aside className="detail-buybox self-start rounded-[16px] border border-[#d8dde1] bg-white p-5 shadow-sm md:col-start-2 md:row-start-2 md:static lg:col-start-3 lg:row-start-1 lg:sticky lg:top-[86px]">
               <div className="mb-3 text-[27px] font-medium text-[#2a1a12]">
                 <small className="text-[14px] align-top">₹</small>
                 {Number(selectedProduct.price).toLocaleString('en-IN')}

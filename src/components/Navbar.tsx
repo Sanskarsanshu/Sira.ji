@@ -149,7 +149,7 @@ export const Navbar: React.FC = () => {
               </button>
 
               <button
-                className="acct-icon-btn"
+                className="acct-icon-btn acct-bag-btn"
                 type="button"
                 onClick={openCurationDrawer}
                 aria-label="Order Commission Bag"
