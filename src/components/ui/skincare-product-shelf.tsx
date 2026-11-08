@@ -88,7 +88,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
     cap: "#f6f5f1",
     label: "#f3f1ec",
     ink: "#1a1a1a",
-    price: 29,
+    price: 2900,
     sizes: ["50 ml", "100 ml"],
     rating: 4.8,
     reviews: 3284,
@@ -114,7 +114,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
     ink: "#111111",
     glass: true,
     liquid: "#f4efe2",
-    price: 12,
+    price: 1200,
     sizes: ["30 ml", "60 ml"],
     rating: 4.6,
     reviews: 18420,
@@ -138,7 +138,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
     cap: "#efeee9",
     label: "#f6f6f3",
     ink: "#111111",
-    price: 14,
+    price: 1400,
     sizes: ["50 ml"],
     rating: 4.4,
     reviews: 2150,
@@ -162,7 +162,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
     cap: "#e6ddd2",
     label: "#ebe3d9",
     ink: "#6b5a4c",
-    price: 30,
+    price: 3000,
     sizes: ["150 ml"],
     rating: 4.7,
     reviews: 5210,
@@ -188,7 +188,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
     ink: "#111111",
     glass: true,
     liquid: "#eef3f6",
-    price: 11,
+    price: 1100,
     sizes: ["30 ml", "60 ml"],
     rating: 4.6,
     reviews: 21870,
@@ -212,7 +212,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
     cap: "#2b2b2b",
     label: "#f1ede6",
     ink: "#3c342d",
-    price: 24,
+    price: 2400,
     sizes: ["50 ml", "100 ml"],
     rating: 4.7,
     reviews: 1608,
@@ -236,7 +236,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
     cap: "#e7c3bb",
     label: "#e7c3bb",
     ink: "#7d4740",
-    price: 18,
+    price: 1800,
     sizes: ["10 ml"],
     rating: 4.8,
     reviews: 9420,
@@ -260,7 +260,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
     cap: "#f6f6f3",
     label: "#f6f6f3",
     ink: "#111111",
-    price: 10,
+    price: 1000,
     sizes: ["50 ml", "150 ml"],
     rating: 4.7,
     reviews: 12040,
@@ -286,8 +286,8 @@ export const DEFAULT_PRODUCTS: Product[] = [
     ink: "#111111",
     glass: true,
     liquid: "#b8752a",
-    price: 18,
-    compareAt: 22,
+    price: 1800,
+    compareAt: 2200,
     sizes: ["250 ml", "500 ml"],
     rating: 4.6,
     reviews: 611,
@@ -313,7 +313,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
     ink: "#111111",
     glass: true,
     liquid: "#f2e9ee",
-    price: 13,
+    price: 1300,
     sizes: ["100 ml", "240 ml"],
     rating: 4.5,
     reviews: 15530,
@@ -337,7 +337,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
     cap: "#e8dbd1",
     label: "#e8dbd1",
     ink: "#6b4f44",
-    price: 28,
+    price: 2800,
     sizes: ["50 ml"],
     rating: 4.8,
     reviews: 2710,
@@ -363,7 +363,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
     ink: "#1a1a1a",
     glass: true,
     liquid: "#f1e2cd",
-    price: 68,
+    price: 6800,
     sizes: ["50 ml", "100 ml"],
     rating: 4.9,
     reviews: 812,
@@ -813,7 +813,7 @@ const SHELF_META = [
 
 export function ProductShelf({
   products = DEFAULT_PRODUCTS,
-  currency = "$",
+  currency = "₹",
   className,
   children,
   embedded = false,
@@ -1141,7 +1141,7 @@ export function ProductShelf({
                         )}
                       >
                         {currency}
-                        {p.price}
+                        {p.price.toLocaleString('en-IN')}
                       </div>
                     </button>
                   ))}
@@ -1471,12 +1471,12 @@ function ProductPage({
           <div className="mt-6 flex items-baseline gap-2.5 tabular-nums">
             <span className="text-[26px] font-medium tracking-[-0.02em] text-[#2a1a12]">
               {currency}
-              {price.toFixed(2)}
+              {Math.round(price).toLocaleString('en-IN')}
             </span>
             {p.compareAt && (
               <span className="text-[16px] text-[#8f8479] line-through">
                 {currency}
-                {(p.compareAt * (price / p.price)).toFixed(2)}
+                {Math.round(p.compareAt * (price / p.price)).toLocaleString('en-IN')}
               </span>
             )}
           </div>
@@ -1504,7 +1504,7 @@ function ProductPage({
                     <span className="font-medium text-[#2a1a12]">{sz}</span>
                     <span className="text-[#6f6156] tabular-nums">
                       {currency}
-                      {(p.price * (i > 0 ? 1.7 : 1)).toFixed(2)}
+                      {Math.round(p.price * (i > 0 ? 1.7 : 1)).toLocaleString('en-IN')}
                     </span>
                   </label>
                 );

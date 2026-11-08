@@ -71,7 +71,7 @@ export const api = {
         image: IMAGES.hat,
         status: 'ready',
         tag: 'Sera.ji Handpicked Couture',
-        price: '€ 2,850',
+        price: '₹28,500',
         details: [
           'Every piece is handpicked Grade-6A Mulberry Silk',
           'Bias-cut architectural drape with self-faced hem',
@@ -92,7 +92,7 @@ export const api = {
         image: IMAGES.product,
         status: 'weaving',
         tag: 'Sera.ji Artisan Clothing',
-        price: '€ 3,400',
+        price: '₹34,000',
         details: [
           '450 GSM Heavy Flemish Master Linen — Handpicked batch',
           'Sculpted peak lapel with hand-padded canvas chest',
@@ -113,7 +113,7 @@ export const api = {
         image: IMAGES.profile,
         status: 'ready',
         tag: 'Sera.ji Evening Silks',
-        price: '€ 2,200',
+        price: '₹22,000',
         details: [
           'Ultra-fine 19 Momme fluid silk charmeuse',
           'Seamless French interior clothing construction',
@@ -134,7 +134,7 @@ export const api = {
         image: IMAGES.sunface,
         status: 'ready',
         tag: 'Sera.ji Private Trunk Show',
-        price: '€ 4,100',
+        price: '₹41,000',
         details: [
           'Double-faced organic silk and long-staple cotton gabardine',
           'Natural beeswax ecological water-repellent finish',

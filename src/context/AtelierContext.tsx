@@ -3,8 +3,9 @@ import type { CapsulePiece, ColorwaySwatch, LocaleConfig, ToastMessage } from '.
 import { api } from '../services/api';
 
 export const LOCALES: LocaleConfig[] = [
-  { code: 'en-GB', label: 'ENG', language: 'English', currency: 'GBP', symbol: '£', flag: '🇬🇧' },
-  { code: 'en-US', label: 'USD', language: 'English', currency: 'USD', symbol: '$', flag: '🇺🇸' },
+  { code: 'en-IN', label: 'INR', language: 'English (IN)', currency: 'INR', symbol: '₹', flag: '🇮🇳' },
+  { code: 'en-GB', label: 'ENG', language: 'English (UK)', currency: 'GBP', symbol: '£', flag: '🇬🇧' },
+  { code: 'en-US', label: 'USD', language: 'English (US)', currency: 'USD', symbol: '$', flag: '🇺🇸' },
   { code: 'fr-FR', label: 'FRA', language: 'Français', currency: 'EUR', symbol: '€', flag: '🇫🇷' },
   { code: 'it-IT', label: 'ITA', language: 'Italiano', currency: 'EUR', symbol: '€', flag: '🇮🇹' },
   { code: 'ja-JP', label: 'JPN', language: '日本語', currency: 'JPY', symbol: '¥', flag: '🇯🇵' },

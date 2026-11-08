@@ -31,18 +31,18 @@ interface ItemData {
 }
 
 const ITEMS: ItemData[] = [
-  { id: 'p-1', x0: 26, x1: 224, y0: 28, y1: 214, name: 'Feather Jacket', price: '$2,900' },
-  { id: 'p-2', x0: 304, x1: 412, y0: 22, y1: 236, name: 'Satin Wide Leg Trousers', price: '$1,450' },
-  { id: 'p-3', x0: 530, x1: 666, y0: 12, y1: 242, name: 'Pleated Dress', price: '$2,200' },
-  { id: 'p-4', x0: 752, x1: 922, y0: 100, y1: 146, name: 'Gold Waist Belt', price: '$420' },
-  { id: 'p-5', x0: 70, x1: 176, y0: 246, y1: 466, name: 'Satin Trench Dress', price: '$2,350' },
-  { id: 'p-6', x0: 294, x1: 422, y0: 294, y1: 432, name: 'Top Handle Bag', price: '$980' },
-  { id: 'p-7', x0: 508, x1: 688, y0: 240, y1: 452, name: 'Billow Sleeve Blouse', price: '$860' },
-  { id: 'p-8', x0: 780, x1: 890, y0: 252, y1: 466, name: 'Tie Waist Trousers', price: '$740' },
-  { id: 'p-9', x0: 64, x1: 178, y0: 484, y1: 698, name: 'Powder Long Coat', price: '$1,980' },
-  { id: 'p-10', x0: 316, x1: 396, y0: 482, y1: 698, name: 'Ivory Straight Trousers', price: '$690' },
-  { id: 'p-11', x0: 530, x1: 672, y0: 508, y1: 682, name: 'Sculpted Ruffle Top', price: '$1,120' },
-  { id: 'p-12', x0: 754, x1: 916, y0: 484, y1: 700, name: 'Pleated Maxi Skirt', price: '$1,340' },
+  { id: 'p-1', x0: 26, x1: 224, y0: 28, y1: 214, name: 'Feather Jacket', price: '₹28,500' },
+  { id: 'p-2', x0: 304, x1: 412, y0: 22, y1: 236, name: 'Satin Wide Leg Trousers', price: '₹14,500' },
+  { id: 'p-3', x0: 530, x1: 666, y0: 12, y1: 242, name: 'Pleated Dress', price: '₹22,000' },
+  { id: 'p-4', x0: 752, x1: 922, y0: 100, y1: 146, name: 'Gold Waist Belt', price: '₹4,200' },
+  { id: 'p-5', x0: 70, x1: 176, y0: 246, y1: 466, name: 'Satin Trench Dress', price: '₹23,500' },
+  { id: 'p-6', x0: 294, x1: 422, y0: 294, y1: 432, name: 'Top Handle Bag', price: '₹9,800' },
+  { id: 'p-7', x0: 508, x1: 688, y0: 240, y1: 452, name: 'Billow Sleeve Blouse', price: '₹8,600' },
+  { id: 'p-8', x0: 780, x1: 890, y0: 252, y1: 466, name: 'Tie Waist Trousers', price: '₹7,400' },
+  { id: 'p-9', x0: 64, x1: 178, y0: 484, y1: 698, name: 'Powder Long Coat', price: '₹19,800' },
+  { id: 'p-10', x0: 316, x1: 396, y0: 482, y1: 698, name: 'Ivory Straight Trousers', price: '₹6,900' },
+  { id: 'p-11', x0: 530, x1: 672, y0: 508, y1: 682, name: 'Sculpted Ruffle Top', price: '₹11,200' },
+  { id: 'p-12', x0: 754, x1: 916, y0: 484, y1: 700, name: 'Pleated Maxi Skirt', price: '₹13,400' },
 ];
 
 interface FemaleLookMeta {
@@ -481,8 +481,8 @@ export const RunwayLookbook: React.FC = () => {
                 <div className="ttl-bundle-note">Bundle all 3 and save 10%</div>
               </div>
               <div className="ttl-bundle-pricing">
-                <s>${bundleOriginalPrice.toFixed(2)}</s>
-                <strong>${bundleDiscountedPrice.toFixed(2)}</strong>
+                <s>₹{Math.round(bundleOriginalPrice).toLocaleString('en-IN')}</s>
+                <strong>₹{Math.round(bundleDiscountedPrice).toLocaleString('en-IN')}</strong>
               </div>
             </div>
 

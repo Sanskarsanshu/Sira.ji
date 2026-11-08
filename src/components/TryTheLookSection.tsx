@@ -28,8 +28,8 @@ const PRODUCTS: Record<string, ProductInfo> = {
     id: 'tatum-5-orbit-copy',
     name: 'Air Jordan 12 Retro',
     vendor: 'Sera.ji Streetwear',
-    price: 149.0,
-    priceStr: '$149.00',
+    price: 14900,
+    priceStr: '₹14,900',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-tatum-5-orbit-copy.webp',
     legend: 'Shoe size',
     sizes: ['40', '41', '42', '43', '44', '45', '46'],
@@ -48,8 +48,8 @@ const PRODUCTS: Record<string, ProductInfo> = {
     id: 'tshirt',
     name: 'Tshirt',
     vendor: 'Sera.ji Streetwear',
-    price: 199.0,
-    priceStr: '$199.00',
+    price: 4900,
+    priceStr: '₹4,900',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-tshirt.webp',
     legend: 'Size',
     sizes: ['S', 'L', 'M', 'XL'],
@@ -65,8 +65,8 @@ const PRODUCTS: Record<string, ProductInfo> = {
     id: 'sweatshirt',
     name: 'Sweatshirt',
     vendor: 'Sera.ji Streetwear',
-    price: 199.0,
-    priceStr: '$199.00',
+    price: 9800,
+    priceStr: '₹9,800',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-sweatshirt.webp',
     legend: 'Size',
     sizes: ['S', 'L', 'M', 'XL'],
@@ -82,8 +82,8 @@ const PRODUCTS: Record<string, ProductInfo> = {
     id: 'tatum-5-orbit',
     name: 'Tatum 5 Orbit',
     vendor: 'Sera.ji Streetwear',
-    price: 149.0,
-    priceStr: '$149.00',
+    price: 14900,
+    priceStr: '₹14,900',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-tatum-5-orbit.webp',
     legend: 'Shoe size',
     sizes: ['40', '41', '42', '43', '44', '45', '46'],
@@ -102,8 +102,8 @@ const PRODUCTS: Record<string, ProductInfo> = {
     id: 'hoodie-black',
     name: 'Hoodie Black',
     vendor: 'Sera.ji Streetwear',
-    price: 199.0,
-    priceStr: '$199.00',
+    price: 14200,
+    priceStr: '₹14,200',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-hoodie-black.webp',
     legend: 'Size',
     sizes: ['S', 'L', 'M', 'XL'],
@@ -119,8 +119,8 @@ const PRODUCTS: Record<string, ProductInfo> = {
     id: 'sweatshirt-plus',
     name: 'Sweatshirt Plus',
     vendor: 'Sera.ji Streetwear',
-    price: 199.0,
-    priceStr: '$199.00',
+    price: 9800,
+    priceStr: '₹9,800',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-sweatshirt-plus.webp',
     legend: 'Size',
     sizes: ['S', 'L', 'M', 'XL'],
@@ -136,8 +136,8 @@ const PRODUCTS: Record<string, ProductInfo> = {
     id: 'hoodie',
     name: 'Hoodie',
     vendor: 'Sera.ji Streetwear',
-    price: 199.0,
-    priceStr: '$199.00',
+    price: 14200,
+    priceStr: '₹14,200',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-hoodie.webp',
     legend: 'Size',
     sizes: ['S', 'L', 'M', 'XL'],
@@ -153,8 +153,8 @@ const PRODUCTS: Record<string, ProductInfo> = {
     id: 'air-jordan-12-retro-copy',
     name: 'Luka 5',
     vendor: 'Sera.ji Streetwear',
-    price: 149.0,
-    priceStr: '$149.00',
+    price: 14900,
+    priceStr: '₹14,900',
     image: 'https://reel-ref-try-the-look.vercel.app/assets/source-air-jordan-12-retro-copy.webp',
     legend: 'Shoe size',
     sizes: ['40', '41', '42', '43', '44', '45', '46'],
@@ -745,10 +745,10 @@ export const TryTheLookSection: React.FC = () => {
       'Reference prices; no order or payment has been placed.',
       '',
       ...bagItems.map(
-        (b) => `${b.name} · Size ${b.size} · Quantity ${b.quantity} · $${(b.price * b.quantity).toFixed(2)}\n${b.url}`
+        (b) => `${b.name} · Size ${b.size} · Quantity ${b.quantity} · ₹${(b.price * b.quantity).toLocaleString('en-IN')}\n${b.url}`
       ),
       '',
-      `Reference subtotal: $${subtotal.toFixed(2)}`,
+      `Reference subtotal: ₹${subtotal.toLocaleString('en-IN')}`,
     ];
     const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -903,8 +903,8 @@ export const TryTheLookSection: React.FC = () => {
                       <div className="ttl-bundle-note">Bundle all 3 and save 10%</div>
                     </div>
                     <div className="ttl-bundle-pricing">
-                      <s>${bundleOriginalPrice.toFixed(2)}</s>
-                      <strong>${bundleDiscountedPrice.toFixed(2)}</strong>
+                      <s>₹{Math.round(bundleOriginalPrice).toLocaleString('en-IN')}</s>
+                      <strong>₹{Math.round(bundleDiscountedPrice).toLocaleString('en-IN')}</strong>
                     </div>
                   </div>
 
@@ -1349,8 +1349,8 @@ export const TryTheLookSection: React.FC = () => {
 
                       <div className="ttl-lb-bundle-bar">
                         <span>Complete the Look (Save 10%):</span>
-                        <s>${bundleOriginalPrice.toFixed(2)}</s>
-                        <strong>${bundleDiscountedPrice.toFixed(2)}</strong>
+                        <s>₹{Math.round(bundleOriginalPrice).toLocaleString('en-IN')}</s>
+                        <strong>₹{Math.round(bundleDiscountedPrice).toLocaleString('en-IN')}</strong>
                         <button
                           type="button"
                           className="ttl-lb-bundle-btn"
@@ -1392,7 +1392,7 @@ export const TryTheLookSection: React.FC = () => {
                   <div>
                     <h3>{item.name}</h3>
                     <p>
-                      Size {item.size} · Quantity {item.quantity} · ${(item.price * item.quantity).toFixed(2)}
+                      Size {item.size} · Quantity {item.quantity} · ₹{(item.price * item.quantity).toLocaleString('en-IN')}
                     </p>
                   </div>
                   <button
@@ -1413,8 +1413,8 @@ export const TryTheLookSection: React.FC = () => {
 
           {bagItems.length > 0 && (
             <p id="bag-total">
-              Reference subtotal $
-              {bagItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)}
+              Reference subtotal ₹
+              {bagItems.reduce((acc, item) => acc + item.price * item.quantity, 0).toLocaleString('en-IN')}
             </p>
           )}
 

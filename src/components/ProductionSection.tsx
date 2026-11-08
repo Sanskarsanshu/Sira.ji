@@ -30,7 +30,7 @@ export const ProductionSection: React.FC = () => {
     image: product.studioImage || IMAGES.product,
     status: 'ready',
     tag: 'Sera.ji Atelier Shelf',
-    price: `${currentLocale.symbol}${unitPrice.toFixed(2)}`,
+    price: `₹${Math.round(unitPrice).toLocaleString('en-IN')}`,
     details: product.benefits,
     fabricSpecs: {
       momme: 22,
@@ -94,7 +94,7 @@ export const ProductionSection: React.FC = () => {
                   toggleCuratePiece(buildShelfCapsulePiece(product, size, unitPrice));
                 }
                 showToast(
-                  `Added ${qty}× ${product.name} (${size} · ${currentLocale.symbol}${unitPrice.toFixed(2)}) to bag ✓`,
+                  `Added ${qty}× ${product.name} (${size} · ₹${Math.round(unitPrice).toLocaleString('en-IN')}) to bag ✓`,
                   'gold',
                 );
               }}
