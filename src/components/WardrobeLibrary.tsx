@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
   Check,
@@ -15,271 +15,31 @@ import {
 } from 'lucide-react';
 import { useAtelier } from '../context/AtelierContext';
 import type { CapsulePiece } from '../types';
+import {
+  WARDROBE_PRODUCTS,
+  RAIL_CATEGORIES,
+  type WardrobeProduct,
+  type RailCategory,
+} from '../data/wardrobeProducts';
 
-export interface WardrobeProduct {
-  id: number;
-  brand: string;
-  name: string;
-  category: 'Outerwear' | 'Sweatshirts' | 'Hoodies';
-  gender: 'Men' | 'Women';
-  price: number;
-  mrp: number;
-  discount: number;
-  rating: number;
-  reviews: number;
-  image: string;
-  images: string[];
-  tag: string;
-  color: string;
-  material: string;
-  sleeve: string;
-  fit: string;
-  neck: string;
-  about: string[];
+export type { WardrobeProduct, RailCategory };
+
+export interface WardrobeLibraryProps {
+  selectedRailIndex?: number | null;
 }
 
-const WARDROBE_PRODUCTS: WardrobeProduct[] = [
-  {
-    id: 1,
-    brand: 'MOTREX',
-    name: 'Men Printed Casual Jacket',
-    category: 'Outerwear',
-    gender: 'Men',
-    price: 483,
-    mrp: 1899,
-    discount: 75,
-    rating: 4.3,
-    reviews: 128,
-    image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=85',
-    images: [
-      'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1100&q=90',
-      'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=1100&q=85',
-      'https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=1100&q=85',
-    ],
-    tag: 'BESTSELLER',
-    color: 'Cobalt / Black',
-    material: 'Polyester shell, soft lining',
-    sleeve: 'Full sleeve',
-    fit: 'Relaxed',
-    neck: 'Hooded',
-    about: [
-      'Lightweight outer layer tailored for everyday architectural styling.',
-      'Practical welt pockets and a comfortable relaxed studio fit.',
-      'Layer effortlessly over a heavyweight tee or knit for cooler days.',
-    ],
-  },
-  {
-    id: 2,
-    brand: 'CAVA',
-    name: 'Essential Brushed Fleece Sweatshirt',
-    category: 'Sweatshirts',
-    gender: 'Women',
-    price: 1199,
-    mrp: 1799,
-    discount: 33,
-    rating: 4.2,
-    reviews: 14,
-    image: 'https://images.unsplash.com/photo-1578681994506-b8f463449011?auto=format&fit=crop&w=900&q=85',
-    images: [
-      'https://images.unsplash.com/photo-1578681994506-b8f463449011?auto=format&fit=crop&w=1100&q=90',
-      'https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=1100&q=85',
-      'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=1100&q=85',
-    ],
-    tag: 'POPULAR',
-    color: 'Cappuccino',
-    material: '60% cotton, 40% polyester',
-    sleeve: 'Long sleeve',
-    fit: 'Regular',
-    neck: 'Round neck',
-    about: [
-      'Brushed fleece interior finished for a soft, warm atelier hand-feel.',
-      'Ribbed cuffs and hem hold a clean architectural silhouette.',
-      'An effortless layer for private studio fittings, travel, and daily wear.',
-    ],
-  },
-  {
-    id: 3,
-    brand: 'MOTREX',
-    name: 'Men Applique Casual Jacket',
-    category: 'Outerwear',
-    gender: 'Men',
-    price: 467,
-    mrp: 2599,
-    discount: 82,
-    rating: 4.1,
-    reviews: 86,
-    image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=900&q=85',
-    images: [
-      'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=1100&q=90',
-      'https://images.unsplash.com/photo-1551488831-00ddcb6cbd3d?auto=format&fit=crop&w=1100&q=85',
-      'https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=1100&q=85',
-    ],
-    tag: 'LIMITED DEAL',
-    color: 'Alabaster White',
-    material: 'Polyester blend',
-    sleeve: 'Full sleeve',
-    fit: 'Regular',
-    neck: 'High neck',
-    about: [
-      'Statement panel detailing for a refined contemporary profile.',
-      'Comfortable lightweight fabric with a structured shoulder line.',
-      'Pairs seamlessly with tailored trousers and everyday essentials.',
-    ],
-  },
-  {
-    id: 4,
-    brand: 'LQT',
-    name: 'Men Printed Casual Bomber Jacket',
-    category: 'Outerwear',
-    gender: 'Men',
-    price: 489,
-    mrp: 1999,
-    discount: 75,
-    rating: 4.0,
-    reviews: 52,
-    image: 'https://images.unsplash.com/photo-1551488831-00ddcb6cbd3d?auto=format&fit=crop&w=900&q=85',
-    images: [
-      'https://images.unsplash.com/photo-1551488831-00ddcb6cbd3d?auto=format&fit=crop&w=1100&q=90',
-      'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1100&q=85',
-      'https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=1100&q=85',
-    ],
-    tag: 'NEW ARRIVAL',
-    color: 'Obsidian Black',
-    material: 'Polyester shell',
-    sleeve: 'Full sleeve',
-    fit: 'Regular',
-    neck: 'Stand collar',
-    about: [
-      'Clean bomber silhouette with a matte atelier finish.',
-      'Ribbed collar and cuffs with a versatile everyday drape.',
-      'Style with selvedge denim, pleated cargos, or relaxed wool trousers.',
-    ],
-  },
-  {
-    id: 5,
-    brand: 'ANIXA',
-    name: 'Women Printed Fleece Hoodie',
-    category: 'Hoodies',
-    gender: 'Women',
-    price: 436,
-    mrp: 1499,
-    discount: 70,
-    rating: 4.4,
-    reviews: 203,
-    image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=900&q=85',
-    images: [
-      'https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=1100&q=90',
-      'https://images.unsplash.com/photo-1578681994506-b8f463449011?auto=format&fit=crop&w=1100&q=85',
-      'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=1100&q=85',
-    ],
-    tag: 'ONLY FEW LEFT',
-    color: 'Blush Rose',
-    material: 'Cotton-poly fleece',
-    sleeve: 'Long sleeve',
-    fit: 'Relaxed',
-    neck: 'Hooded',
-    about: [
-      'Plush fleece construction for lightweight warmth and softness.',
-      'Minimalist graphic accent inspired by private gallery editions.',
-      'Relaxed dropped-shoulder silhouette for effortless layering.',
-    ],
-  },
-  {
-    id: 6,
-    brand: 'INTELLIWEAR',
-    name: 'Men & Women Textured Track Jacket',
-    category: 'Outerwear',
-    gender: 'Men',
-    price: 589,
-    mrp: 2899,
-    discount: 79,
-    rating: 4.0,
-    reviews: 61,
-    image: 'https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=900&q=85',
-    images: [
-      'https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=1100&q=90',
-      'https://images.unsplash.com/photo-1551488831-00ddcb6cbd3d?auto=format&fit=crop&w=1100&q=85',
-      'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1100&q=85',
-    ],
-    tag: 'VALUE PICK',
-    color: 'Espresso / Crimson',
-    material: 'Polyester knit',
-    sleeve: 'Long sleeve',
-    fit: 'Regular',
-    neck: 'Stand collar',
-    about: [
-      'Archive sport-inspired colour blocking and tactile waffle texture.',
-      ' Precision zip-front closure for versatile studio layering.',
-      'Engineered for comfortable movement and all-day structure.',
-    ],
-  },
-  {
-    id: 7,
-    brand: 'MOTREX',
-    name: 'Men Colorblock Casual Jacket',
-    category: 'Outerwear',
-    gender: 'Men',
-    price: 599,
-    mrp: 2499,
-    discount: 76,
-    rating: 4.2,
-    reviews: 97,
-    image: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=900&q=85',
-    images: [
-      'https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=1100&q=90',
-      'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=1100&q=85',
-      'https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=1100&q=85',
-    ],
-    tag: 'TRENDING',
-    color: 'Umbrian Olive',
-    material: 'Polyester blend',
-    sleeve: 'Full sleeve',
-    fit: 'Regular',
-    neck: 'Hooded',
-    about: [
-      'Tonal colourblocked panels create a refined architectural outdoor look.',
-      'Balanced studio proportion with concealed side pockets.',
-      'A versatile transitional layer for shifting climates.',
-    ],
-  },
-  {
-    id: 8,
-    brand: 'BRIGHTKRAFTS',
-    name: 'Men Colorblock Bomber Jacket',
-    category: 'Outerwear',
-    gender: 'Men',
-    price: 469,
-    mrp: 999,
-    discount: 53,
-    rating: 4.1,
-    reviews: 42,
-    image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=85',
-    images: [
-      'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=1100&q=90',
-      'https://images.unsplash.com/photo-1544923246-77307dd654cb?auto=format&fit=crop&w=1100&q=85',
-      'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=1100&q=85',
-    ],
-    tag: 'EVERYDAY ESSENTIAL',
-    color: 'Slate Blue / Ash',
-    material: 'Fine weave polyester',
-    sleeve: 'Long sleeve',
-    fit: 'Regular',
-    neck: 'Stand collar',
-    about: [
-      'Minimalist colourblock bomber with a clean tailored collar.',
-      'Featherlight construction makes it effortless to pack and layer.',
-      'Pairs naturally with raw denim and low-profile leather footwear.',
-    ],
-  },
-];
-
 const FILTER_CHIPS: { label: string; value: string }[] = [
-  { label: 'All pieces', value: 'All' },
-  { label: 'Women', value: 'Women' },
-  { label: 'Men', value: 'Men' },
-  { label: 'Jackets', value: 'Outerwear' },
-  { label: 'Sweatshirts', value: 'Sweatshirts' },
-  { label: 'Hoodies', value: 'Hoodies' },
+  { label: 'All pieces (80)', value: 'All' },
+  { label: 'Oversized T-Shirts (8)', value: 'Oversized T-Shirts' },
+  { label: 'Jerseys (8)', value: 'Jerseys' },
+  { label: 'Shirts (8)', value: 'Shirts' },
+  { label: 'Cardigans (8)', value: 'Cardigans' },
+  { label: 'Hoodies (8)', value: 'Hoodies' },
+  { label: 'Crewnecks (8)', value: 'Crewnecks' },
+  { label: 'Polo T-Shirts (8)', value: 'Polo T-Shirts' },
+  { label: 'Henleys & Long Sleeves (8)', value: 'Henleys & Long Sleeves' },
+  { label: 'Knitwear & Sweaters (8)', value: 'Knitwear & Sweaters' },
+  { label: 'Classic T-Shirts (8)', value: 'Classic T-Shirts' },
 ];
 
 const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'] as const;
@@ -291,7 +51,7 @@ const renderStars = (rating: number) => {
   return '★'.repeat(full) + '☆'.repeat(Math.max(0, 5 - full));
 };
 
-export const WardrobeLibrary: React.FC = () => {
+export const WardrobeLibrary: React.FC<WardrobeLibraryProps> = ({ selectedRailIndex }) => {
   const {
     addToCart,
     openCurationDrawer,
@@ -309,6 +69,20 @@ export const WardrobeLibrary: React.FC = () => {
   const [selectedSize, setSelectedSize] = useState<string>('M');
   const [quantity, setQuantity] = useState<number>(1);
   const [localSavedIds, setLocalSavedIds] = useState<Set<number>>(() => new Set());
+
+  // Dynamically update suggestions based on which cloth the user clicks/chooses on the rail
+  useEffect(() => {
+    if (
+      selectedRailIndex !== null &&
+      selectedRailIndex !== undefined &&
+      selectedRailIndex >= 0 &&
+      selectedRailIndex < RAIL_CATEGORIES.length
+    ) {
+      const targetCategory = RAIL_CATEGORIES[selectedRailIndex];
+      setActiveFilter(targetCategory);
+      setSelectedProduct(null); // return to catalog view showing matching products
+    }
+  }, [selectedRailIndex]);
 
   const toCapsulePiece = (p: WardrobeProduct): CapsulePiece => ({
     id: `wardrobe-${p.id}`,
@@ -357,7 +131,7 @@ export const WardrobeLibrary: React.FC = () => {
         p.category === activeFilter;
       const matchesSearch =
         !q ||
-        `${p.brand} ${p.name} ${p.category} ${p.gender} ${p.color}`
+        `${p.brand} ${p.name} ${p.category} ${p.gender} ${p.color} ${p.material} ${p.fit}`
           .toLowerCase()
           .includes(q);
       return matchesFilter && matchesSearch;
@@ -372,7 +146,15 @@ export const WardrobeLibrary: React.FC = () => {
 
   const recommendations = useMemo(() => {
     if (!selectedProduct) return [];
-    return WARDROBE_PRODUCTS.filter((p) => p.id !== selectedProduct.id).slice(0, 5);
+    // Prioritize products from the same category
+    const sameCat = WARDROBE_PRODUCTS.filter(
+      (p) => p.category === selectedProduct.category && p.id !== selectedProduct.id,
+    );
+    if (sameCat.length >= 5) return sameCat.slice(0, 5);
+    const others = WARDROBE_PRODUCTS.filter(
+      (p) => p.category !== selectedProduct.category && p.id !== selectedProduct.id,
+    );
+    return [...sameCat, ...others].slice(0, 5);
   }, [selectedProduct]);
 
   const scrollToLibraryTop = () => {
@@ -434,14 +216,37 @@ export const WardrobeLibrary: React.FC = () => {
       {!selectedProduct ? (
         <div className="catalog-view">
           <div className="mb-6 flex flex-col gap-1.5">
-            <span className="text-[11px] font-semibold tracking-[0.22em] text-[#8c6548] uppercase">
-              The Clothing Library
-            </span>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[11px] font-semibold tracking-[0.22em] text-[#8c6548] uppercase">
+                {activeFilter === 'All'
+                  ? 'The Clothing Library · 80 Archive Pieces'
+                  : `The Clothing Library · ${activeFilter}`}
+              </span>
+              {selectedRailIndex !== null &&
+                selectedRailIndex !== undefined &&
+                selectedRailIndex >= 0 &&
+                selectedRailIndex < RAIL_CATEGORIES.length && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-[#2a1a12]/15 bg-white/80 px-2.5 py-0.5 text-[10.5px] font-medium text-[#2a1a12]">
+                    <span className="size-1.5 rounded-full bg-[#8c6548] animate-pulse" />
+                    Suggested for Rail Piece {selectedRailIndex + 1}
+                  </span>
+                )}
+            </div>
             <h3 className="text-2xl font-medium tracking-[-0.02em] text-[#2a1a12] sm:text-[32px]">
-              Find your next <span className="lt">favourite.</span>
+              {activeFilter === 'All' ? (
+                <>
+                  Find your next <span className="lt">favourite.</span>
+                </>
+              ) : (
+                <>
+                  Curated for <span className="lt">{activeFilter}</span>
+                </>
+              )}
             </h3>
-            <p className="max-w-[62ch] text-[14px] leading-relaxed text-[#6f5f53]">
-              A considered edit of everyday essentials, statement layers and timeless wardrobe pieces curated to complement the studio rail.
+            <p className="max-w-[68ch] text-[14px] leading-relaxed text-[#6f5f53]">
+              {activeFilter === 'All'
+                ? 'A considered edit of 80 archive essentials, statement layers and timeless wardrobe pieces across 10 distinct categories curated to complement the studio rail.'
+                : `Showing all 8 archive pieces in ${activeFilter}, tailored with exceptional materials and artisan finishes to match your selected rail look.`}
             </p>
           </div>
 

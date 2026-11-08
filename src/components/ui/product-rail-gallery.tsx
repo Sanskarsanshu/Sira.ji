@@ -10,6 +10,7 @@ export interface RailGarment {
   id: string;
   /** Accessible name, caption and detail title. */
   name: string;
+  categoryName?: string;
   description?: string;
   /** Built-in illustration, used when no image is supplied. */
   kind?: GarmentKind;
@@ -562,7 +563,6 @@ export function ClothingRailHero({
   const uid = React.useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const count = items.length;
   const stageRef = React.useRef(null as HTMLDivElement | null);
-  const scrollViewportRef = React.useRef(null as HTMLDivElement | null);
   const slots = React.useRef([] as (HTMLButtonElement | null)[]);
   const swings = React.useRef([] as (HTMLSpanElement | null)[]);
   const turns = React.useRef([] as (HTMLSpanElement | null)[]);
@@ -1399,8 +1399,9 @@ function Detail({ uid, item, index, total, hanger, labels, reduced, saved, onAdd
               shown ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0",
             )}
           >
-            <p className="font-mono text-[11px] tracking-[0.2em] text-muted-foreground">
-              {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+            <p className="font-mono text-[11px] tracking-[0.2em] text-muted-foreground uppercase">
+              {item.categoryName ? `${item.categoryName} · ` : ""}
+              Piece {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
               {item.tag ? ` · ${item.tag}` : ""}
             </p>
             <h3 id={titleId} className="text-2xl font-medium tracking-tight sm:text-3xl">
