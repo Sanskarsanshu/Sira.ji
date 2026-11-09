@@ -200,6 +200,11 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.24);
 }
 
+/* Compact Inspect Pins button hidden on laptop/desktop by default */
+.ttl-mobile-inspect-btn {
+  display: none;
+}
+
 /* Look Info Box */
 .ttl-look-info {
   display: flex;
@@ -1627,8 +1632,8 @@
   cursor: not-allowed;
 }
 
-/* Responsive adjustments */
-@media (max-width: 860px) {
+/* Responsive adjustments (Phone & Tablet: <= 1024px) */
+@media (max-width: 1024px) {
   .try-the-look-card {
     height: auto !important;
     min-height: 720px !important;
@@ -1658,10 +1663,58 @@
   .ttl-tick-btn.active {
     flex: 0 0 100px;
   }
+  /* On phone & tablet: remove the full Inspect Pins card to free up runway space */
   .ttl-glass-suite {
-    left: 14px;
+    display: none !important;
+  }
+  /* On phone & tablet: show only the compact small button with name "INSPECT PINS" */
+  .ttl-mobile-inspect-btn {
+    display: inline-flex !important;
+    position: absolute;
     top: 14px;
-    width: calc(100% - 28px);
+    left: 14px;
+    z-index: 25;
+    font-family: 'Michroma', sans-serif;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #ffffff;
+    padding: 8px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 99px;
+    background: rgba(22, 25, 31, 0.88);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    cursor: pointer;
+    align-items: center;
+    gap: 7px;
+    box-shadow:
+      0 8px 20px -4px rgba(22, 25, 31, 0.38),
+      inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    touch-action: manipulation;
+  }
+  .ttl-mobile-inspect-btn .ttl-pulse-dot {
+    width: 6.5px;
+    height: 6.5px;
+    border-radius: 50%;
+    background: #f5a623;
+    box-shadow: 0 0 8px rgba(245, 166, 35, 0.7);
+    flex-shrink: 0;
+  }
+  .ttl-mobile-inspect-btn .ttl-arrow {
+    font-size: 11px;
+    opacity: 0.85;
+    transition: transform 0.2s ease;
+  }
+  .ttl-mobile-inspect-btn:hover,
+  .ttl-mobile-inspect-btn:active {
+    background: #16191f;
+    border-color: rgba(255, 255, 255, 0.45);
+    transform: translateY(-1px);
+    box-shadow:
+      0 12px 24px -4px rgba(22, 25, 31, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
   .ttl-runway-bundle-card {
     left: 14px;

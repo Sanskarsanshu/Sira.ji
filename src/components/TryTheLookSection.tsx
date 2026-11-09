@@ -895,6 +895,25 @@ export const TryTheLookSection: React.FC = () => {
                   </div>
                 </div>
 
+                {/* Compact "INSPECT PINS" Button (Phone & Tablet only: replaces the full card) */}
+                <button
+                  className="ttl-mobile-inspect-btn"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    ringRef.current?.classList.remove('show', 'drag');
+                    setPickingKey(null);
+                    setInspectPinNum(hotPin || 1);
+                    setIsLightboxOpen(true);
+                  }}
+                  title="Open interactive pin inspector"
+                  aria-label="Inspect Pins"
+                >
+                  <span className="ttl-pulse-dot" />
+                  <span>INSPECT PINS</span>
+                  <span className="ttl-arrow">↗</span>
+                </button>
+
                 {/* Complete the Look Card (Positioned in Bottom-Left of Main Runway Area) */}
                 <div className="ttl-runway-bundle-card">
                   <div className="ttl-bundle-row">
