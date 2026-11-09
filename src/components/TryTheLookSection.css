@@ -1640,7 +1640,16 @@
   }
   .ttl-main {
     grid-template-columns: 1fr;
-    grid-template-rows: 520px auto;
+    grid-template-rows: 520px 200px;
+  }
+  .ttl-panel {
+    border-left: none;
+    border-top: 1px solid rgba(22, 25, 31, 0.08);
+    height: 200px;
+    width: 100%;
+    background: #f3f6fa;
+    position: relative;
+    overflow: hidden;
   }
   .ttl-controls-bar {
     left: 14px;
@@ -1721,14 +1730,80 @@
     bottom: 68px;
     width: calc(100% - 28px);
   }
+  /* Horizontal 3-product rail below the stage (matching female section) */
   .ttl-cards-track {
-    height: auto;
-    overflow-y: visible;
+    display: flex !important;
+    flex-direction: row !important;
+    height: 100% !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    gap: 0;
   }
   .ttl-runway-card {
-    height: auto !important;
-    min-height: 220px;
-    padding: 16px;
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    flex: 1 0 130px !important;
+    min-width: 115px !important;
+    max-width: none !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    padding: 10px 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    border-right: 1px solid rgba(22, 25, 31, 0.08) !important;
+    border-bottom: none !important;
+    box-sizing: border-box !important;
+    scroll-snap-align: start;
+    overflow: hidden;
+  }
+  .ttl-runway-card:last-child {
+    border-right: none !important;
+  }
+  .ttl-runway-card .fav {
+    left: 10px;
+    top: 10px;
+  }
+  .ttl-card-badge {
+    right: 10px;
+    top: 10px;
+  }
+  .ttl-runway-card .shot {
+    padding: 4px 0;
+  }
+  .ttl-runway-card .shot img {
+    max-height: 85px !important;
+    max-width: 85% !important;
+  }
+  .ttl-runway-card .meta {
+    margin-top: 2px;
+  }
+  .ttl-runway-card .meta h3 {
+    font-size: 8.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: calc(100% - 28px);
+  }
+  .ttl-runway-card .meta span {
+    font-size: 11px;
+    margin-top: 2px;
+  }
+  .ttl-picker-box {
+    inset: 4px;
+    padding: 8px;
+    z-index: 10;
+  }
+  .ttl-pills-row {
+    gap: 4px;
+  }
+  .ttl-pill-label {
+    padding: 3px 6px;
+    font-size: 9px;
   }
   .ttl-lightbox {
     padding: 10px;
